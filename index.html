@@ -1,0 +1,885 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>NetFold ปริศนาภาพคลี่</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: night "holo-lab" — aurora light behind a perspective grid floor; frosted-glass panels float above it.
+   3D pieces sit on a lit glass stage with real shadows. Play view = stage panel beside a 2x2 answer grid; stacks on phones. */
+:root{
+  --bg:#060816; --ink:#eef1ff; --muted:#a3abd2; --dim:#717aa3;
+  --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.09); --stroke:rgba(255,255,255,.12); --stroke-hi:rgba(255,255,255,.24);
+  --cyan:#22d3ee; --pink:#f472b6; --violet:#8b5cf6; --amber:#fbbf24; --lime:#a3e635; --good:#34d399; --bad:#fb7185;
+  --grad:linear-gradient(115deg,#22d3ee 0%,#8b5cf6 52%,#f472b6 100%);
+  --f-display:'Chakra Petch','IBM Plex Sans Thai',system-ui,sans-serif; --f-body:'IBM Plex Sans Thai',system-ui,sans-serif;
+  --r:22px; --lift:0 24px 60px -24px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.14);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:-10%;z-index:-2;pointer-events:none;
+  background:radial-gradient(38vmax 34vmax at 10% 6%,rgba(34,211,238,.24),transparent 62%),radial-gradient(40vmax 36vmax at 94% 14%,rgba(244,114,182,.2),transparent 62%),radial-gradient(52vmax 38vmax at 50% 108%,rgba(139,92,246,.32),transparent 64%);
+  animation:drift 22s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;left:-50%;right:-50%;bottom:-8vh;height:58vh;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(130,180,255,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(130,180,255,.13) 1px,transparent 1px);background-size:64px 64px;
+  transform:perspective(520px) rotateX(64deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 10%,transparent 85%)}
+@keyframes drift{to{transform:translate3d(3%,-2%,0) scale(1.06)}}
+.shell{max-width:1140px;margin:0 auto;padding-inline:16px;padding-block:16px 64px;position:relative}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.2;text-wrap:balance;margin:0;letter-spacing:.2px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* glass */
+.card{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.025));border:1px solid var(--stroke);border-radius:var(--r);
+  box-shadow:var(--lift);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%)}
+.pad{padding:22px}
+
+/* header */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none}
+.brand .logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.03));border:1px solid var(--stroke-hi);box-shadow:0 10px 30px -10px rgba(34,211,238,.6)}
+.brand b{font-family:var(--f-display);font-size:24px;font-weight:700;letter-spacing:1px;display:block;line-height:1.1}
+.brand small{font-size:13px;color:var(--muted)}
+.bar-r{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--stroke-hi);background:var(--glass-2);border-radius:999px;padding:7px 16px;font-weight:600;font-size:14px;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:background .2s}
+.chip:hover{background:rgba(255,255,255,.16)}
+.chip.lic{border-color:rgba(251,191,36,.5);color:#ffe6a6}
+.chip.lic.ok{border-color:rgba(52,211,153,.55);color:#b7f5dc}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--stroke-hi);border-radius:16px;background:var(--glass-2);color:var(--ink);
+  font-family:var(--f-display);font-weight:600;font-size:16px;padding:11px 22px;cursor:pointer;letter-spacing:.3px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 24px -14px rgba(0,0,0,.9);transition:transform .15s,box-shadow .2s,background .2s;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.15)}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+.btn.pri{background:var(--grad);border-color:transparent;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -3px 0 rgba(0,0,0,.18),0 14px 34px -10px rgba(139,92,246,.75)}
+.btn.pri:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -3px 0 rgba(0,0,0,.18),0 18px 44px -10px rgba(244,114,182,.8)}
+.btn.big{font-size:20px;padding:15px 40px;border-radius:18px}
+.btn.cyan{border-color:rgba(34,211,238,.45);color:#bff4ff}
+.btn.lime{background:linear-gradient(120deg,#34d399,#a3e635);border-color:transparent;color:#06210f;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 12px 30px -10px rgba(52,211,153,.7)}
+.btn.sm{font-size:14px;padding:7px 14px;border-radius:12px}
+.screen{display:flex;flex-direction:column;gap:20px}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+
+/* home */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);overflow:hidden}
+.hero-txt{padding:34px 30px 30px;display:flex;flex-direction:column;gap:16px;min-width:0;justify-content:center}
+.kicker{font-family:var(--f-display);font-weight:600;font-size:13px;letter-spacing:3px;color:var(--cyan)}
+.hero h1{font-size:clamp(30px,4.6vw,50px);font-weight:700}
+.hero p{margin:0;color:var(--muted);max-width:52ch}
+.facts{display:flex;gap:8px;flex-wrap:wrap}
+.facts span{font-size:13px;font-weight:600;border:1px solid var(--stroke);border-radius:999px;padding:4px 12px;background:rgba(255,255,255,.05)}
+.hero-3d{min-height:340px;position:relative;background:radial-gradient(70% 60% at 50% 60%,rgba(80,90,200,.18),transparent 70%)}
+.hero-3d canvas,.stimbox canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;touch-action:none;cursor:grab}
+.trialbar{border-radius:18px;padding:12px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  background:linear-gradient(90deg,rgba(251,191,36,.16),rgba(244,114,182,.12));border:1px solid rgba(251,191,36,.35)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.55fr);gap:20px}
+.step{font-size:19px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.step i{font-style:normal;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:10px;background:var(--grad);color:#fff;font-size:15px}
+.field{width:100%;border:1px solid var(--stroke-hi);border-radius:14px;padding:13px 16px;font:500 18px var(--f-body);background:rgba(0,0,0,.25);color:var(--ink);box-shadow:inset 0 2px 8px rgba(0,0,0,.35)}
+.field::placeholder{color:var(--dim)}
+.field:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.22),inset 0 2px 8px rgba(0,0,0,.35)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pchip{border:1px solid var(--stroke);border-radius:999px;background:rgba(255,255,255,.05);padding:4px 13px;font-weight:600;font-size:14px;cursor:pointer}
+.pchip.on{background:rgba(34,211,238,.18);border-color:rgba(34,211,238,.6)}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.lvl{position:relative;text-align:left;border:1px solid var(--stroke);border-radius:18px;padding:12px 14px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(255,255,255,.08),rgba(255,255,255,.02));transition:transform .2s,border-color .2s,box-shadow .2s}
+.lvl::before{content:"";position:absolute;inset:auto -30% -55% -30%;height:80%;background:radial-gradient(closest-side,var(--c),transparent);opacity:.35;pointer-events:none}
+.lvl:hover{transform:translateY(-3px)}
+.lvl.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 18px 40px -16px var(--c)}
+.lvl .lv-ico{width:100%;aspect-ratio:4/3;object-fit:contain;margin:-6px 0 0}
+.lvl .lv-k{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:2px;color:var(--c)}
+.lvl b{font-family:var(--f-display);font-weight:700;font-size:21px}
+.lvl small{font-size:13px;line-height:1.45;color:var(--muted)}
+.lvl .lock{position:absolute;top:10px;right:10px;font-size:12px;font-weight:600;background:rgba(0,0,0,.45);border:1px solid var(--stroke-hi);border-radius:8px;padding:1px 8px}
+.lv1{--c:#22d3ee}.lv2{--c:#fbbf24}.lv3{--c:#f472b6}
+.actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+
+/* game */
+.hud{display:flex;align-items:center;gap:16px;padding:12px 18px;flex-wrap:wrap}
+.hud .q{font-family:var(--f-display);font-weight:700;font-size:19px;white-space:nowrap}
+.prog{flex:1 1 140px;height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;min-width:100px;box-shadow:inset 0 1px 3px rgba(0,0,0,.5)}
+.prog i{display:block;height:100%;background:var(--grad);border-radius:999px;box-shadow:0 0 14px rgba(139,92,246,.8);transition:width .4s}
+.stat{display:flex;flex-direction:column;align-items:center;line-height:1.15;min-width:52px}
+.stat small{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.4px}
+.stat b{font-family:var(--f-display);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.streak b{color:var(--amber);text-shadow:0 0 12px rgba(251,191,36,.7)}
+.hud .sp{display:flex;gap:8px}
+.play{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:20px;align-items:start}
+.stim{padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.tag{align-self:flex-start;font-family:var(--f-display);font-size:13px;font-weight:600;letter-spacing:.5px;border-radius:999px;padding:3px 12px;background:rgba(139,92,246,.22);border:1px solid rgba(139,92,246,.55);color:#ddd2ff}
+.stimbox{position:relative;aspect-ratio:1/1;max-width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--stroke);
+  background:radial-gradient(80% 70% at 50% 35%,rgba(60,70,160,.32),rgba(8,10,28,.7) 75%)}
+.drag-tip{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:600;background:rgba(10,12,30,.7);border:1px solid var(--stroke);color:#dfe4ff;border-radius:999px;padding:3px 12px;pointer-events:none;white-space:nowrap;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.solctl{display:flex;flex-direction:column;gap:10px}
+.soltabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.soltabs span{font-size:13px;font-weight:600;color:var(--muted)}
+.stab{border:1px solid var(--stroke-hi);border-radius:10px;background:rgba(255,255,255,.06);padding:3px 12px;font-weight:700;cursor:pointer;font-family:var(--f-display)}
+.stab.on{background:#fff;color:#14122b}
+.stab.ok{box-shadow:inset 0 -3px 0 var(--good)}.stab.no{box-shadow:inset 0 -3px 0 var(--bad)}
+.foldrow{display:flex;gap:12px;align-items:center}
+.foldrow input{flex:1;accent-color:var(--pink);min-width:0}
+.foldrow small{font-family:var(--f-display);font-size:13px;width:42px;text-align:right}
+.qside{display:flex;flex-direction:column;gap:16px;min-width:0}
+.qtext{font-size:clamp(19px,2.3vw,25px);font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.opt{position:relative;border:1px solid var(--stroke);border-radius:18px;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;min-width:0;overflow:hidden;
+  background:radial-gradient(90% 80% at 50% 30%,rgba(70,80,170,.25),rgba(255,255,255,.03) 70%);box-shadow:var(--lift);transition:transform .2s,border-color .2s,box-shadow .2s}
+.opt:hover:not([disabled]){transform:translateY(-4px);border-color:rgba(34,211,238,.6);box-shadow:0 0 0 1px rgba(34,211,238,.35),0 22px 44px -18px rgba(34,211,238,.6)}
+.opt[disabled]{cursor:default}
+.opt .lab{position:absolute;top:10px;left:10px;width:32px;height:32px;display:grid;place-items:center;border-radius:11px;background:rgba(10,12,30,.65);border:1px solid var(--stroke-hi);font-family:var(--f-display);font-weight:700;font-size:16px;z-index:1;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.opt .ov{aspect-ratio:4/3;display:grid;place-items:center;min-width:0}
+.opt .ov img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 16px rgba(0,0,0,.35))}
+.opt .num{font-family:var(--f-display);font-weight:700;font-size:58px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 18px rgba(139,92,246,.45))}
+.opt .tile{width:92px;height:92px;display:grid;place-items:center;border-radius:20px;font-family:var(--f-display);font-weight:700;font-size:44px;color:#14122b;
+  background:linear-gradient(150deg,#ffffff,#cfd5f5);box-shadow:inset 0 2px 0 #fff,inset 0 -6px 12px rgba(80,90,160,.35),0 18px 30px -12px rgba(0,0,0,.8);transform:perspective(300px) rotateX(14deg) rotateY(-10deg)}
+.opt.right{border-color:var(--good);box-shadow:0 0 0 1px var(--good),0 0 34px -6px rgba(52,211,153,.7)}
+.opt.right .lab{background:var(--good);color:#04261a}
+.opt.wrong{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad),0 0 34px -6px rgba(251,113,133,.7)}
+.opt.wrong .lab{background:var(--bad);color:#2b0710}
+.opt.out{opacity:.22;filter:grayscale(1)}
+.opt .mark{position:absolute;right:10px;top:10px;font-weight:700;font-size:13px;border-radius:8px;padding:1px 10px;color:#06121a}
+.fb{border-radius:18px;padding:14px 18px;display:flex;gap:12px;align-items:center;font-weight:600;font-size:17px;border:1px solid var(--stroke)}
+.fb.ok{background:linear-gradient(100deg,rgba(52,211,153,.28),rgba(163,230,53,.14));border-color:rgba(52,211,153,.55)}
+.fb.no{background:linear-gradient(100deg,rgba(251,113,133,.24),rgba(244,114,182,.1));border-color:rgba(251,113,133,.5)}
+.fb .pts{margin-left:auto;font-family:var(--f-display);font-weight:700;font-size:20px;white-space:nowrap}
+.after{display:flex;gap:12px;flex-wrap:wrap}
+.explain h3{font-size:20px;margin-bottom:12px}
+.explain ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.explain li{display:flex;gap:12px;align-items:flex-start}
+.explain li b{flex:0 0 auto;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;border:1px solid var(--stroke-hi)}
+.explain li.y b{background:var(--good);color:#04261a;border-color:transparent}.explain li.n b{background:rgba(251,113,133,.18)}
+.explain .tip{margin:14px 0 0;padding:12px 16px;border-radius:14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);font-size:15px}
+
+/* results + stats */
+.res-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px}
+.score-card{padding:28px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;overflow:hidden}
+.score-card::before{content:"";position:absolute;inset:-40% -20% auto;height:90%;background:radial-gradient(closest-side,rgba(139,92,246,.45),transparent);pointer-events:none}
+.score-card .big{font-family:var(--f-display);font-weight:700;font-size:76px;line-height:1;font-variant-numeric:tabular-nums;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 26px rgba(139,92,246,.5))}
+.stars{display:flex;gap:8px}.stars svg{width:44px;height:44px;filter:drop-shadow(0 4px 12px rgba(244,114,182,.5))}
+.tiles4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ktile{border:1px solid var(--stroke);border-radius:16px;padding:12px 14px;background:rgba(255,255,255,.04)}
+.ktile small{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.ktile b{font-family:var(--f-display);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.bars{display:flex;flex-direction:column;gap:10px}
+.brow{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:12px;align-items:center;font-size:14px;font-weight:600}
+.btrack{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.btrack i{display:block;height:100%;border-radius:999px}
+.brow span:last-child{font-family:var(--f-display);text-align:right;font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--stroke)}
+th{font-size:12px;color:var(--muted);letter-spacing:.4px;font-weight:600}
+td.n{font-family:var(--f-display);text-align:right;font-variant-numeric:tabular-nums}
+.rank{display:inline-block;font-size:13px;font-weight:600;border-radius:999px;padding:2px 12px;background:rgba(139,92,246,.25);border:1px solid rgba(139,92,246,.6);color:#e5dcff;font-family:var(--f-body)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.empty{color:var(--muted);font-size:15px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(4,5,15,.7);display:grid;place-items:center;padding:16px;z-index:50;overflow:auto;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.modal .card{max-width:580px;width:100%;padding:26px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(160deg,rgba(40,44,90,.85),rgba(14,16,40,.92))}
+.devid{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px dashed rgba(34,211,238,.55);border-radius:14px;padding:12px 16px;background:rgba(34,211,238,.07)}
+.devid code{font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:2px}
+textarea.field{font:500 13px ui-monospace,Menlo,monospace;min-height:96px;resize:vertical;word-break:break-all}
+.msg{font-weight:600;font-size:15px;margin:0}
+.msg.ok{color:var(--good)}.msg.no{color:var(--bad)}
+ol.steps{margin:0;padding-left:20px;font-size:15px;color:var(--muted)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60;width:100%;height:100%}
+
+@media (max-width:880px){
+  .hero{grid-template-columns:1fr}.hero-3d{min-height:300px;border-top:1px solid var(--stroke)}
+  .grid2,.play,.res-top{grid-template-columns:1fr}
+  .tiles4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){.levels{grid-template-columns:1fr}.lvl{display:grid;grid-template-columns:110px 1fr;column-gap:12px;align-items:center}.lvl .lv-ico{grid-row:span 3;margin:0}}
+@media (max-width:480px){.opts{gap:10px}.brow{grid-template-columns:96px minmax(0,1fr) 52px}.hud{gap:10px}.hero-txt{padding:24px 20px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head><body>
+<div class="shell">
+  <header class="bar">
+    <a class="brand" href="#home" id="brand">
+      <span class="logo"><svg width="28" height="28" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs><g fill="url(#lg)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"><rect x="14" y="2" width="12" height="12" rx="2"/><rect x="2" y="14" width="12" height="12" rx="2"/><rect x="14" y="14" width="12" height="12" rx="2"/><rect x="26" y="14" width="12" height="12" rx="2"/><rect x="14" y="26" width="12" height="12" rx="2"/></g></svg></span>
+      <span><b>NetFold</b><small>ปริศนาภาพคลี่ 3 มิติ</small></span>
+    </a>
+    <div class="bar-r">
+      <button class="chip" id="whoChip" type="button">ผู้เล่น: —</button>
+      <button class="chip lic" id="licChip" type="button">โหมดทดลอง · ปลดล็อก</button>
+    </div>
+  </header>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs></svg>
+
+  <!-- HOME -->
+  <section class="screen" id="s-home">
+    <div class="hero card">
+      <div class="hero-txt">
+        <span class="kicker">SPATIAL TRAINING · 3D NETS</span>
+        <h1>พับในหัวให้ได้<br><span class="grad-text">ก่อนพับจริง</span></h1>
+        <p>ดูรูปทรงสามมิติแล้วเลือกภาพคลี่ที่ถูกต้อง เริ่มจากกล่องลูกบาศก์ ไปจนถึงทรงยี่สิบหน้าและชิ้นงานรูปตัว L, T, U และขั้นบันได ตอบเสร็จแล้วดูเฉลยแบบพับให้เห็นทีละขั้นได้ทุกข้อ</p>
+        <div class="facts"><span>อายุ 12 ปีขึ้นไป</span><span>3 ระดับ: ม.ต้น → มหาวิทยาลัย</span><span>24 รูปทรง</span><span>6 แบบโจทย์</span></div>
+      </div>
+      <div class="hero-3d" id="heroView" aria-label="ตัวอย่างภาพคลี่ลูกบาศก์กำลังพับ"></div>
+    </div>
+
+    <div id="trialBar" class="trialbar">
+      <span>โหมดทดลอง: เล่นได้ระดับ ม.ต้น ครั้งละ 5 ข้อ ใส่รหัสปลดล็อกเพื่อเล่นครบทุกระดับ</span>
+      <button class="btn sm pri" type="button" id="trialUnlock">ใส่รหัสปลดล็อก</button>
+    </div>
+
+    <div class="grid2">
+      <div class="card pad">
+        <h2 class="step"><i>1</i>ชื่อผู้เล่น</h2>
+        <label for="pname" class="note" style="display:block;margin:0 0 6px">พิมพ์ชื่อใหม่ หรือแตะชื่อที่เคยเล่น</label>
+        <input id="pname" class="field" maxlength="20" placeholder="เช่น มายด์ ม.2/3" autocomplete="off">
+        <div class="chips" id="pchips"></div>
+        <p class="note">ชื่อและสถิติเก็บไว้ในเครื่องนี้เท่านั้น ไม่ส่งออกไปที่ใด</p>
+      </div>
+      <div class="card pad">
+        <h2 class="step"><i>2</i>เลือกระดับ</h2>
+        <div class="levels" id="levels">
+          <button type="button" class="lvl lv1 on" data-l="1"><img class="lv-ico" id="lvI1" alt=""><span class="lv-k">LV.1</span><b>ม.ต้น</b><small>กล่อง ปริซึม พีระมิด ทรงกระบอก กรวย · นับหน้า ขอบ จุดยอด</small></button>
+          <button type="button" class="lvl lv2" data-l="2"><img class="lv-ico" id="lvI2" alt=""><span class="lv-k">LV.2</span><b>ม.ปลาย</b><small>ชิ้นงานตัว L/T ทรงแปดหน้า พีระมิดตัดยอด · จับคู่สีบนรูปทรง</small></button>
+          <button type="button" class="lvl lv3" data-l="3"><img class="lv-ico" id="lvI3" alt=""><span class="lv-k">LV.3</span><b>มหาวิทยาลัย</b><small>ทรงสิบสอง/ยี่สิบหน้า ทรงตัดมุม · ลายที่มีทิศทางและภาพสะท้อน</small></button>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn pri big" type="button" id="btnStart">เริ่มเล่น</button>
+      <button class="btn ghost" type="button" id="btnStats">ดูสถิติ</button>
+      <span class="note" id="startNote" style="margin:0;color:var(--amber)"></span>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="s-game" hidden>
+    <div class="hud card">
+      <span class="q" id="hQ">ข้อ 1/10</span>
+      <div class="prog" aria-hidden="true"><i id="hProg" style="width:0%"></i></div>
+      <div class="stat"><small>คะแนน</small><b id="hScore">0</b></div>
+      <div class="stat streak"><small>ถูกติดกัน</small><b id="hStreak">0</b></div>
+      <div class="stat"><small>เวลา</small><b id="hTime">0.0</b></div>
+      <div class="sp">
+        <button class="btn sm cyan" type="button" id="btnHint">ตัดตัวเลือก (−50%)</button>
+        <button class="btn sm ghost" type="button" id="btnQuit">ออก</button>
+      </div>
+    </div>
+    <div class="play">
+      <div class="stim card">
+        <span class="tag" id="qTag">เลือกภาพคลี่</span>
+        <div class="stimbox" id="stimBox"></div>
+        <div class="solctl" id="solCtl" hidden>
+          <div class="soltabs" id="solTabs"></div>
+          <div class="foldrow">
+            <button class="btn sm pri" type="button" id="btnPlay">เล่นการพับ</button>
+            <label for="foldT" class="note" style="margin:0">พับ</label>
+            <input type="range" id="foldT" min="0" max="100" value="0">
+            <small id="foldPct">0%</small>
+          </div>
+        </div>
+      </div>
+      <div class="qside">
+        <h2 class="qtext" id="qText"></h2>
+        <div class="opts" id="opts"></div>
+        <div class="fb" id="fb" hidden></div>
+        <div class="after" id="after" hidden>
+          <button class="btn ghost" type="button" id="btnSol">ดูเฉลยแบบพับ</button>
+          <button class="btn lime" type="button" id="btnNext">ข้อต่อไป</button>
+        </div>
+      </div>
+    </div>
+    <div class="card pad explain" id="explain" hidden></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="s-result" hidden>
+    <div class="res-top">
+      <div class="card score-card">
+        <span class="rank" id="rRank"></span>
+        <div class="stars" id="rStars"></div>
+        <div class="big" id="rScore">0</div>
+        <div style="font-weight:600;color:var(--muted)">คะแนน · <span id="rLevel"></span></div>
+        <p id="rMsg" style="margin:6px 0 0;font-size:18px;font-weight:600"></p>
+        <p id="rBest" class="note"></p>
+      </div>
+      <div class="card pad" style="display:flex;flex-direction:column;gap:14px">
+        <div class="tiles4" id="rTiles"></div>
+        <h3 style="font-size:17px">ผลตามแบบโจทย์</h3>
+        <div class="bars" id="rBars"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn pri big" type="button" id="btnAgain">เล่นอีกรอบ</button>
+      <button class="btn ghost" type="button" id="btnHome">เปลี่ยนระดับ / ผู้เล่น</button>
+      <button class="btn ghost" type="button" id="btnStats2">ดูสถิติ</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="screen" id="s-stats" hidden>
+    <div class="card pad" style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+        <h2 style="font-size:24px">สถิติของ <span id="stName">—</span> <span class="rank" id="stRank"></span></h2>
+        <button class="btn sm ghost" type="button" id="btnBack">กลับหน้าแรก</button>
+      </div>
+      <div class="tiles4" id="stTiles"></div>
+      <div class="grid2" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+        <div><h3 style="font-size:17px;margin-bottom:8px">คะแนน 15 รอบล่าสุด</h3><div id="stChart"></div></div>
+        <div><h3 style="font-size:17px;margin-bottom:8px">ความแม่นยำตามแบบโจทย์</h3><div class="bars" id="stBars"></div></div>
+      </div>
+    </div>
+    <div class="card pad" style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+        <h2 style="font-size:22px">อันดับในเครื่องนี้</h2>
+        <div class="seg" id="lbSeg"></div>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>ผู้เล่น</th><th>ฉายา</th><th style="text-align:right">คะแนนสูงสุด</th><th style="text-align:right">ความแม่นยำ</th><th style="text-align:right">รอบที่เล่น</th></tr></thead><tbody id="lbBody"></tbody></table></div>
+    </div>
+  </section>
+</div>
+
+<!-- LICENSE -->
+<div class="modal" id="lockModal" hidden>
+  <div class="card" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+    <h2 id="lockTitle" style="font-size:24px">ปลดล็อก NetFold ฉบับเต็ม</h2>
+    <ol class="steps">
+      <li>คัดลอก “รหัสเครื่อง” ด้านล่าง ส่งให้ผู้ขาย</li>
+      <li>ผู้ขายส่ง “รหัสปลดล็อก” กลับมา (1 รหัสใช้ได้กับเครื่องนี้เครื่องเดียว)</li>
+      <li>วางรหัสในช่องด้านล่าง แล้วกดปลดล็อก</li>
+    </ol>
+    <div class="devid"><span style="font-weight:700">รหัสเครื่อง</span><code id="devId">…</code><button class="btn sm cyan" type="button" id="btnCopyId">คัดลอก</button></div>
+    <p class="note" id="sellerNote" hidden></p>
+    <label for="licInput" style="font-weight:700">รหัสปลดล็อก</label>
+    <textarea id="licInput" class="field" placeholder="วางรหัสปลดล็อกที่ได้รับที่นี่" spellcheck="false"></textarea>
+    <p class="msg" id="licMsg"></p>
+    <div class="actions"><button class="btn pri" type="button" id="btnUnlock">ปลดล็อก</button><button class="btn ghost" type="button" id="btnLockClose">เล่นโหมดทดลองต่อ</button></div>
+    <p class="note">ถ้าล้างข้อมูลเบราว์เซอร์ ให้วางรหัสเดิมอีกครั้งบนเครื่องเดิมได้เลย</p>
+  </div>
+</div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+/* ================= utilities ================= */
+const TAU=Math.PI*2, rnd=Math.random, ri=n=>Math.floor(rnd()*n), pick=a=>a[ri(a.length)];
+const range=n=>Array.from({length:n},(_,i)=>i);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=ri(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+function wpick(w){const ks=Object.keys(w).filter(k=>w[k]>0);let s=ks.reduce((a,k)=>a+w[k],0)*rnd();for(const k of ks){s-=w[k];if(s<=0)return k}return ks[ks.length-1]}
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]], add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]], scl=(a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2], crs=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const len=a=>Math.hypot(a[0],a[1],a[2]), nrm=a=>{const l=len(a)||1;return [a[0]/l,a[1]/l,a[2]/l]};
+const avg=ps=>{const c=[0,0,0];ps.forEach(p=>{c[0]+=p[0];c[1]+=p[1];c[2]+=p[2]});return scl(c,1/ps.length)};
+const avg2=ps=>{let x=0,y=0;ps.forEach(p=>{x+=p[0];y+=p[1]});return [x/ps.length,y/ps.length]};
+const d2=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
+const ang2=(a,b)=>Math.atan2(b[1]-a[1],b[0]-a[0]);
+const rot2=(p,t)=>{const c=Math.cos(t),s=Math.sin(t);return [p[0]*c-p[1]*s,p[0]*s+p[1]*c]};
+const V3=a=>new THREE.Vector3(a[0],a[1],a[2]);
+function newell(ps){const n=[0,0,0];for(let i=0;i<ps.length;i++){const a=ps[i],b=ps[(i+1)%ps.length];n[0]+=(a[1]-b[1])*(a[2]+b[2]);n[1]+=(a[2]-b[2])*(a[0]+b[0]);n[2]+=(a[0]-b[0])*(a[1]+b[1])}return nrm(n)}
+const mulM3=(R,v)=>[R[0]*v[0]+R[1]*v[1]+R[2]*v[2],R[3]*v[0]+R[4]*v[1]+R[5]*v[2],R[6]*v[0]+R[7]*v[1]+R[8]*v[2]];
+
+/* ================= solids ================= */
+const PHI=(1+Math.sqrt(5))/2;
+const reg=(n,r,rot=0)=>range(n).map(i=>[r*Math.cos(rot+TAU*i/n),r*Math.sin(rot+TAU*i/n)]);
+const sq=s=>[[-s/2,-s/2],[s/2,-s/2],[s/2,s/2],[-s/2,s/2]];
+function prismVF(poly,h,lie,top){const n=poly.length,c=avg2(poly),k=top==null?1:top;
+  const V=[...poly.map(p=>[p[0],p[1],0]),...poly.map(p=>[c[0]+(p[0]-c[0])*k,c[1]+(p[1]-c[1])*k,h])];
+  const F=[range(n).reverse(),range(n).map(i=>i+n)];
+  for(let i=0;i<n;i++){const j=(i+1)%n;F.push([i,j,j+n,i+n])}
+  return {V:lie?V:V.map(([x,y,z])=>[x,z,-y]),F}}
+function pyramidVF(poly,h){const n=poly.length,c=avg2(poly);const V=[...poly.map(p=>[p[0],p[1],0]),[c[0],c[1],h]];
+  const F=[range(n).reverse()];for(let i=0;i<n;i++)F.push([i,(i+1)%n,n]);return {V:V.map(([x,y,z])=>[x,z,-y]),F}}
+function hullVF(P){const F=[],seen=new Set(),n=P.length,eps=1e-6;
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)for(let k=j+1;k<n;k++){
+    let nn=crs(sub(P[j],P[i]),sub(P[k],P[i]));const l=len(nn);if(l<1e-9)continue;nn=scl(nn,1/l);
+    const d=dot(nn,P[i]);let pos=0,neg=0;const cop=[];
+    for(let m=0;m<n;m++){const s=dot(nn,P[m])-d;if(s>eps)pos++;else if(s<-eps)neg++;else cop.push(m)}
+    if(pos&&neg)continue;if(pos)nn=scl(nn,-1);
+    const key=cop.join(',');if(seen.has(key))continue;seen.add(key);
+    const c=avg(cop.map(m=>P[m])),u=nrm(sub(P[cop[0]],c)),w=crs(nn,u);
+    const an=m=>{const p=sub(P[m],c);return Math.atan2(dot(p,w),dot(p,u))};
+    cop.sort((a,b)=>an(a)-an(b));F.push(cop)}
+  return {V:P.map(p=>p.slice()),F}}
+function cyc(x,y,z){return [[x,y,z],[y,z,x],[z,x,y]]}
+function signs(p){const out=[[]];p.forEach(v=>{const nx=[];out.forEach(o=>{nx.push([...o,v]);if(v!==0)nx.push([...o,-v])});out.splice(0,out.length,...nx)});return out}
+function allPerm(p){const r=[];const [a,b,c]=p;[[a,b,c],[a,c,b],[b,a,c],[b,c,a],[c,a,b],[c,b,a]].forEach(q=>r.push(q));return r}
+function uniq(P){const m=new Map();P.forEach(p=>m.set(p.map(v=>v.toFixed(5)).join(','),p));return [...m.values()]}
+
+const DEFS={
+  cube:{name:'ลูกบาศก์',desc:'สี่เหลี่ยมจัตุรัส 6 หน้า',build:()=>prismVF(sq(2),2)},
+  cuboid:{name:'ทรงสี่เหลี่ยมมุมฉาก',desc:'สี่เหลี่ยมผืนผ้า 6 หน้า (ขนาดเท่ากันเป็นคู่ 3 คู่)',build:()=>prismVF([[0,0],[2.6,0],[2.6,1.5],[0,1.5]],1.0)},
+  tri_prism:{name:'ปริซึมสามเหลี่ยม',desc:'สามเหลี่ยม 2 หน้า + สี่เหลี่ยมผืนผ้า 3 หน้า',build:()=>prismVF(reg(3,1,Math.PI/2),2.4,true)},
+  wedge:{name:'ทรงลิ่ม (ปริซึมสามเหลี่ยมมุมฉาก)',desc:'สามเหลี่ยมมุมฉาก 2 หน้า + สี่เหลี่ยมผืนผ้า 3 หน้าที่กว้างไม่เท่ากัน',build:()=>prismVF([[0,0],[2.2,0],[0,1.2]],1.6,true)},
+  pent_prism:{name:'ปริซึมห้าเหลี่ยม',desc:'ห้าเหลี่ยม 2 หน้า + สี่เหลี่ยมผืนผ้า 5 หน้า',build:()=>prismVF(reg(5,1.1,Math.PI/2),1.5)},
+  hex_prism:{name:'ปริซึมหกเหลี่ยม',desc:'หกเหลี่ยม 2 หน้า + สี่เหลี่ยมผืนผ้า 6 หน้า',build:()=>prismVF(reg(6,1),1.4)},
+  house:{name:'ปริซึมรูปบ้าน',desc:'ห้าเหลี่ยมรูปบ้าน 2 หน้า + สี่เหลี่ยมผืนผ้า 5 หน้า',build:()=>prismVF([[0,0],[2,0],[2,1.3],[1,2.1],[0,1.3]],2.4,true)},
+  L:{name:'ชิ้นงานรูปตัว L',desc:'รูปตัว L 2 หน้า + สี่เหลี่ยมผืนผ้า 6 หน้า',build:()=>prismVF([[0,0],[2,0],[2,.8],[.8,.8],[.8,2],[0,2]],1.0,true)},
+  T:{name:'ชิ้นงานรูปตัว T',desc:'รูปตัว T 2 หน้า + สี่เหลี่ยมผืนผ้า 8 หน้า',build:()=>prismVF([[.7,0],[1.4,0],[1.4,1.4],[2.1,1.4],[2.1,2.1],[0,2.1],[0,1.4],[.7,1.4]],.9,true)},
+  U:{name:'ชิ้นงานรูปตัว U',desc:'รูปตัว U 2 หน้า + สี่เหลี่ยมผืนผ้า 8 หน้า',build:()=>prismVF([[0,0],[2.1,0],[2.1,1.8],[1.4,1.8],[1.4,.7],[.7,.7],[.7,1.8],[0,1.8]],.9,true)},
+  stair:{name:'ชิ้นงานขั้นบันได 3 ขั้น',desc:'รูปขั้นบันได 2 หน้า + สี่เหลี่ยมผืนผ้า 8 หน้า',build:()=>prismVF([[0,0],[2.1,0],[2.1,.7],[1.4,.7],[1.4,1.4],[.7,1.4],[.7,2.1],[0,2.1]],1.2,true)},
+  tetra:{name:'ทรงสี่หน้า (พีระมิดฐานสามเหลี่ยม)',desc:'สามเหลี่ยมด้านเท่า 4 หน้า',build:()=>hullVF([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]])},
+  sq_pyr:{name:'พีระมิดฐานสี่เหลี่ยมจัตุรัส',desc:'สี่เหลี่ยมจัตุรัส 1 หน้า + สามเหลี่ยมหน้าจั่ว 4 หน้า',build:()=>pyramidVF(sq(2),1.6)},
+  pent_pyr:{name:'พีระมิดฐานห้าเหลี่ยม',desc:'ห้าเหลี่ยม 1 หน้า + สามเหลี่ยมหน้าจั่ว 5 หน้า',build:()=>pyramidVF(reg(5,1.1,Math.PI/2),1.7)},
+  hex_pyr:{name:'พีระมิดฐานหกเหลี่ยม',desc:'หกเหลี่ยม 1 หน้า + สามเหลี่ยมหน้าจั่ว 6 หน้า',build:()=>pyramidVF(reg(6,1.1),1.5)},
+  frustum:{name:'พีระมิดตัดยอด',desc:'สี่เหลี่ยมจัตุรัส 2 หน้า (ใหญ่ 1 เล็ก 1) + สี่เหลี่ยมคางหมู 4 หน้า',build:()=>prismVF(sq(2.2),1.2,false,.5)},
+  octa:{name:'ทรงแปดหน้า',desc:'สามเหลี่ยมด้านเท่า 8 หน้า',build:()=>hullVF([[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]])},
+  icosa:{name:'ทรงยี่สิบหน้า',desc:'สามเหลี่ยมด้านเท่า 20 หน้า',build:()=>hullVF(uniq([].concat(...signs([0,1,PHI]).map(p=>cyc(...p)))))},
+  dodeca:{name:'ทรงสิบสองหน้า',desc:'ห้าเหลี่ยมด้านเท่า 12 หน้า',build:()=>hullVF(uniq([...signs([1,1,1]),...[].concat(...signs([0,1/PHI,PHI]).map(p=>cyc(...p)))]))},
+  cubocta:{name:'ทรงคิวบอกทาฮีดรอน',desc:'สี่เหลี่ยมจัตุรัส 6 หน้า + สามเหลี่ยมด้านเท่า 8 หน้า',build:()=>hullVF(uniq([].concat(...signs([1,1,0]).map(p=>cyc(...p)))))},
+  trunc_oct:{name:'ทรงแปดหน้าตัดมุม',desc:'สี่เหลี่ยมจัตุรัส 6 หน้า + หกเหลี่ยมด้านเท่า 8 หน้า',build:()=>hullVF(uniq([].concat(...signs([0,1,2]).map(p=>allPerm(p)))))},
+  trunc_tet:{name:'ทรงสี่หน้าตัดมุม',desc:'สามเหลี่ยมด้านเท่า 4 หน้า + หกเหลี่ยมด้านเท่า 4 หน้า',build:()=>hullVF(uniq([].concat(...[[3,1,1],[1,3,1],[1,1,3]].map(p=>signs(p)))).filter(p=>p.filter(v=>v<0).length%2===0))},
+  cylinder:{name:'ทรงกระบอก',desc:'วงกลม 2 วง + สี่เหลี่ยมผืนผ้า 1 แผ่น ที่ยาวเท่าเส้นรอบวง (2πr)',curved:n=>range(n).slice(2),build:()=>prismVF(reg(28,1),2.2)},
+  cone:{name:'กรวย',desc:'วงกลม 1 วง + รูปเสี้ยววงกลม ที่ส่วนโค้งยาวเท่าเส้นรอบวงฐาน',curved:n=>range(n).slice(1),build:()=>pyramidVF(reg(28,1),2.1)},
+};
+const FAMS=[['cube','cuboid','tri_prism','wedge','pent_prism','hex_prism','house'],['tetra','sq_pyr','pent_pyr','hex_pyr','frustum'],['cylinder','cone','frustum','hex_prism','hex_pyr'],['tetra','octa','icosa','dodeca','cubocta','trunc_oct','trunc_tet','cube'],['L','T','U','stair','house','cuboid']];
+function related(k){const s=new Set();FAMS.forEach(f=>{if(f.includes(k))f.forEach(x=>s.add(x))});s.delete(k);return [...s]}
+const SC={};
+function getSolid(key){if(SC[key])return SC[key];const d=DEFS[key];const {V,F}=d.build();return SC[key]=finalizeSolid(key,V,F,d)}
+function finalizeSolid(key,V,F,d){
+  const c=avg(V);V=V.map(v=>sub(v,c));const r=Math.max(...V.map(len));V=V.map(v=>scl(v,1/r));
+  const N=F.map(f=>newell(f.map(i=>V[i]))),C=F.map(f=>avg(f.map(i=>V[i])));
+  const em=new Map(),ek=(a,b)=>a<b?a+'_'+b:b+'_'+a;
+  F.forEach((f,fi)=>f.forEach((a,k)=>{const kk=ek(a,f[(k+1)%f.length]);if(!em.has(kk))em.set(kk,[]);em.get(kk).push(fi)}));
+  const adj=F.map((f,fi)=>f.map((a,k)=>{const arr=em.get(ek(a,f[(k+1)%f.length]));return arr.length===2?(arr[0]===fi?arr[1]:arr[0]):-1}));
+  const basis=F.map((f,fi)=>{const o=V[f[0]],e1=nrm(sub(V[f[1]],o)),n=N[fi];return {o,e1,e2:crs(n,e1),n}});
+  const local=F.map((f,fi)=>{const B=basis[fi];return f.map(i=>{const q=sub(V[i],B.o);return [dot(q,B.e1),dot(q,B.e2)]})});
+  const ups=F.map((f,fi)=>f.map((a,k)=>nrm(sub(scl(add(V[a],V[f[(k+1)%f.length]]),.5),C[fi]))));
+  const curved=new Set(d.curved?d.curved(F.length):[]);
+  return {key,name:d.name,desc:d.desc,V,F,N,C,adj,basis,local,ups,curved,isCurved:curved.size>0,nV:V.length,nE:em.size,nF:F.length,closed:[...em.values()].every(a=>a.length===2)};
+}
+
+/* ================= nets (layouts) ================= */
+function placeOn(src,j,Pa,Pb){const Cj=src[j],Cj1=src[(j+1)%src.length];const th=ang2(Pb,Pa)-ang2(Cj,Cj1);
+  return {pts:src.map(c=>{const r=rot2([c[0]-Cj[0],c[1]-Cj[1]],th);return [r[0]+Pb[0],r[1]+Pb[1]]}),rot:th}}
+function mkRoot(S,r){return {slot:r,target:r,pts:S.local[r].map(p=>p.slice()),rot:0,parent:-1,pk:-1,ownK:-1,hinge:null,bad:false}}
+function placeChild(S,faces,pfi,k){const pf=faces[pfi],ps=pf.slot,m=S.F[ps].length;const nb=S.adj[ps][k];
+  const vb=S.F[ps][(k+1)%m];const j=S.F[nb].indexOf(vb);const Pa=pf.pts[k],Pb=pf.pts[(k+1)%m];
+  const {pts,rot}=placeOn(S.local[nb],j,Pa,Pb);return {slot:nb,target:nb,pts,rot,parent:pfi,pk:k,ownK:j,hinge:[Pa,Pb],bad:false}}
+function trisOf(f){if(f._tris)return f._tris;let idx=[];try{idx=THREE.ShapeUtils.triangulateShape(f.pts.map(p=>new THREE.Vector2(p[0],p[1])),[])}catch(e){}
+  f._tris=idx.map(t=>{const T=t.map(i=>f.pts[i]);const c=avg2(T);return T.map(p=>[c[0]+(p[0]-c[0])*.95,c[1]+(p[1]-c[1])*.95])});return f._tris}
+function triOv(A,B){for(const P of [A,B])for(let i=0;i<3;i++){const a=P[i],b=P[(i+1)%3];const ax=[a[1]-b[1],b[0]-a[0]];
+  let mnA=1e9,mxA=-1e9,mnB=1e9,mxB=-1e9;A.forEach(p=>{const v=p[0]*ax[0]+p[1]*ax[1];mnA=Math.min(mnA,v);mxA=Math.max(mxA,v)});B.forEach(p=>{const v=p[0]*ax[0]+p[1]*ax[1];mnB=Math.min(mnB,v);mxB=Math.max(mxB,v)});
+  if(mxA<=mnB+1e-9||mxB<=mnA+1e-9)return false}return true}
+function overlapsAny(nf,faces,skip){const A=trisOf(nf);for(let i=0;i<faces.length;i++){if(i===skip)continue;const B=trisOf(faces[i]);for(const a of A)for(const b of B)if(triOv(a,b))return true}return false}
+function rootMatrix(S,r){const B=S.basis[r];const m=new THREE.Matrix4();m.makeBasis(V3(B.e1),V3(B.e2),V3(B.n));m.setPosition(V3(B.o));return m}
+function hingeM(h,a){const ax=new THREE.Vector3(h[1][0]-h[0][0],h[1][1]-h[0][1],0).normalize();
+  return new THREE.Matrix4().makeTranslation(h[0][0],h[0][1],0).multiply(new THREE.Matrix4().makeRotationAxis(ax,a)).multiply(new THREE.Matrix4().makeTranslation(-h[0][0],-h[0][1],0))}
+function computeFolds(L){const S=L.S;const M=rootMatrix(S,L.faces[0].slot);L.M=M;const W=[];
+  L.faces.forEach((f,i)=>{if(f.parent<0){W[i]=new THREE.Matrix4();return}
+    const p=L.faces[f.parent];const al=Math.acos(Math.max(-1,Math.min(1,dot(S.N[p.target],S.N[f.target]))));
+    const c=avg2(f.pts);let best=null;
+    for(const s of [1,-1]){const Wc=W[f.parent].clone().multiply(hingeM(f.hinge,s*al));const q=new THREE.Vector3(c[0],c[1],0).applyMatrix4(Wc).applyMatrix4(M);const dd=q.distanceTo(V3(S.C[f.target]));if(!best||dd<best.d)best={d:dd,s,Wc}}
+    f.alpha=al;f.sign=best.s;W[i]=best.Wc});
+  return L}
+function genLayout(S){if(S.isCurved)return genCurved(S);
+  for(let t=0;t<80;t++){const faces=[mkRoot(S,ri(S.nF))];const has=new Set([faces[0].slot]);let ok=true;
+    while(faces.length<S.nF){const cand=[];faces.forEach((f,fi)=>S.adj[f.slot].forEach((nb,k)=>{if(nb>=0&&!has.has(nb))cand.push([fi,k])}));
+      let placed=false;for(const [fi,k] of shuffle(cand)){const nf=placeChild(S,faces,fi,k);if(overlapsAny(nf,faces))continue;faces.push(nf);has.add(nf.slot);placed=true;break}
+      if(!placed){ok=false;break}}
+    if(ok)return computeFolds({S,faces,kind:'ok'})}
+  return null}
+function genCurved(S){const cone=S.key==='cone';const lat=[...S.curved];const m=lat.length,k0=ri(m);
+  const faces=[mkRoot(S,lat[k0])];
+  for(let i=1;i<m;i++){const pi=faces.length-1,slot=lat[(k0+i)%m];faces.push(placeChild(S,faces,pi,S.adj[faces[pi].slot].indexOf(slot)))}
+  (cone?[0]:[0,1]).forEach(c=>{const o=[];faces.forEach((f,fi)=>{const k=S.adj[f.slot].indexOf(c);if(k>=0&&S.curved.has(f.slot))o.push([fi,k])});const [fi,k]=pick(o);faces.push(placeChild(S,faces,fi,k))});
+  return computeFolds({S,faces,kind:'ok'})}
+function netSig(L){const cs=L.faces.map(f=>avg2(f.pts));const d=[];for(let i=0;i<cs.length;i++)for(let j=i+1;j<cs.length;j++)d.push(Math.round(d2(cs[i],cs[j])*40));d.sort((a,b)=>a-b);return L.faces.length+':'+d.join(',')}
+function cloneL(L){return {...L,faces:L.faces.map(f=>({...f,pts:f.pts.map(p=>p.slice()),_tris:null}))}}
+function leafIdx(L){return range(L.faces.length).filter(i=>i>0&&!L.faces.some(c=>c.parent===i))}
+function removeAt(L,i){return {...L,faces:L.faces.filter((_,j)=>j!==i).map(f=>({...f,parent:f.parent>i?f.parent-1:f.parent}))}}
+function usedEdges(L,fi){const f=L.faces[fi],u=new Set();if(f.parent>=0)u.add(f.ownK);L.faces.forEach(c=>{if(c.parent===fi)u.add(c.pk)});return u}
+function freeEdges(L){const out=[];L.faces.forEach((f,fi)=>{if(f.bad||f.target!==f.slot)return;const u=usedEdges(L,fi);f.pts.forEach((_,k)=>{if(!u.has(k))out.push([fi,k])})});return out}
+function attach(L,fi,k,srcSlot,target){const S=L.S,q=L.faces[fi],m=q.pts.length,Pa=q.pts[k],Pb=q.pts[(k+1)%m],el=d2(Pa,Pb),src=S.local[srcSlot];
+  for(const j of shuffle(range(src.length))){if(Math.abs(d2(src[j],src[(j+1)%src.length])-el)>1e-6)continue;
+    const {pts,rot}=placeOn(src,j,Pa,Pb);const nf={slot:srcSlot,target,pts,rot,parent:fi,pk:k,ownK:j,hinge:[Pa,Pb],bad:true,_tris:null};
+    if(overlapsAny(nf,L.faces))continue;return nf}
+  return null}
+/* --- wrong-net generators --- */
+function dMove(L){const S=L.S;for(const li of shuffle(leafIdx(L))){const f=L.faces[li];if(f.bad||S.curved.has(f.slot))continue;
+    const L2=removeAt(cloneL(L),li);for(const [fi,k] of shuffle(freeEdges(L2))){const q=L2.faces[fi],sg=S.adj[q.slot][k];if(sg<0||sg===f.slot)continue;
+      const nf=attach(L2,fi,k,f.slot,sg);if(!nf)continue;L2.faces.push(nf);L2.kind='move';return computeFolds(L2)}}
+  return null}
+function dMissing(L){const S=L.S;const ls=leafIdx(L).filter(i=>!S.curved.has(L.faces[i].slot));if(!ls.length)return null;const L2=removeAt(cloneL(L),pick(ls));L2.kind='missing';return computeFolds(L2)}
+function dExtra(L){const S=L.S;const L2=cloneL(L);const slots=S.isCurved?range(S.nF).filter(s=>!S.curved.has(s)):range(S.nF);
+  for(const [fi,k] of shuffle(freeEdges(L2)).slice(0,40)){const q=L2.faces[fi],sg=S.adj[q.slot][k];if(sg<0)continue;
+    for(const s of shuffle(slots).slice(0,4)){const nf=attach(L2,fi,k,s,sg);if(nf){L2.faces.push(nf);L2.kind='extra';return computeFolds(L2)}}}
+  return null}
+function dStretch(L){const S=L.S;for(const li of shuffle(leafIdx(L))){const L2=cloneL(L);const f=L2.faces[li];if(S.curved.has(f.slot))continue;
+    const k=pick([1.5,.6]);const [a,b]=f.hinge;let pts;
+    if(f.pts.length>=8){const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];pts=f.pts.map(p=>[m[0]+(p[0]-m[0])*k,m[1]+(p[1]-m[1])*k])}
+    else{const u=[b[0]-a[0],b[1]-a[1]];const l=Math.hypot(u[0],u[1]);u[0]/=l;u[1]/=l;const w=[-u[1],u[0]];
+      pts=f.pts.map(p=>{const q=[p[0]-a[0],p[1]-a[1]];const s=q[0]*u[0]+q[1]*u[1],t=q[0]*w[0]+q[1]*w[1];return [a[0]+u[0]*s+w[0]*t*k,a[1]+u[1]*s+w[1]*t*k]})}
+    f.pts=pts;f._tris=null;f.bad=true;if(overlapsAny(f,L2.faces,li))continue;L2.kind='stretch';return computeFolds(L2)}
+  return null}
+function dOther(L,lvl){const pool=related(L.S.key).filter(k=>DEFS[k]);if(!pool.length)return null;const S2=getSolid(pick(pool));const L2=genLayout(S2);if(!L2)return null;L2.kind='other';return L2}
+function reasonFor(D,S){const n=S.nF;switch(D.kind){
+  case 'move':return S.isCurved?'วงกลมทั้งสองอยู่ด้านเดียวกัน พับแล้วซ้อนกัน อีกด้านจะเปิดโล่ง':'พับแล้วมีสองหน้าทับกันที่ตำแหน่งเดียว และเหลือช่องว่าง 1 ช่อง ปิดเป็นรูปทรงไม่ได้';
+  case 'missing':return S.isCurved?'ส่วนประกอบไม่ครบ ขาดวงกลมไป 1 วง':`มีเพียง ${D.faces.length} หน้า แต่${S.name}ต้องมี ${n} หน้า`;
+  case 'extra':return S.isCurved?'มีชิ้นวงกลมเกินมา 1 ชิ้น พับแล้วซ้อนกัน':`มี ${D.faces.length} หน้า เกินมา 1 หน้า (${S.name}มี ${n} หน้า) พับแล้วซ้อนกัน`;
+  case 'stretch':return S.isCurved?'วงกลมมีขนาดไม่พอดีกับแผ่นข้าง เส้นรอบวงยาวไม่เท่ากับขอบที่ต้องประกบ':'มีหน้าที่ขนาดผิด ขอบที่ต้องประกบกันยาวไม่เท่ากัน';
+  case 'other':return `เป็นภาพคลี่ของ${D.S.name} (${D.S.desc})`;}return ''}
+
+/* ================= symmetry + decorations ================= */
+function inv3(m){const [a,b,c,d,e,f,g,h,i]=m;const A=e*i-f*h,B=-(d*i-f*g),Cc=d*h-e*g;const det=a*A+b*B+c*Cc;
+  return [A/det,-(b*i-c*h)/det,(b*f-c*e)/det,B/det,(a*i-c*g)/det,-(a*f-c*d)/det,Cc/det,-(a*h-b*g)/det,(a*e-b*d)/det]}
+function cols(a,b,c){return [a[0],b[0],c[0],a[1],b[1],c[1],a[2],b[2],c[2]]}
+function mul3(A,B){const r=[];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let s=0;for(let k=0;k<3;k++)s+=A[i*3+k]*B[k*3+j];r.push(s)}return r}
+function groupOf(S){if(S.G)return S.G;const V=S.V,n=V.length;const i0=0;let i1=1;while(i1<n&&len(crs(V[i0],V[i1]))<1e-3)i1++;
+  const Ai=inv3(cols(V[i0],V[i1],crs(V[i0],V[i1])));const G=[];const l0=len(V[i0]),l1=len(V[i1]),d01=dot(V[i0],V[i1]);
+  for(let a=0;a<n;a++){if(Math.abs(len(V[a])-l0)>1e-6)continue;for(let b=0;b<n;b++){if(b===a||Math.abs(len(V[b])-l1)>1e-6||Math.abs(dot(V[a],V[b])-d01)>1e-6)continue;
+    const R=mul3(cols(V[a],V[b],crs(V[a],V[b])),Ai);let ok=true;
+    for(const v of V){const w=mulM3(R,v);if(!V.some(u=>Math.abs(u[0]-w[0])+Math.abs(u[1]-w[1])+Math.abs(u[2]-w[2])<1e-5)){ok=false;break}}
+    if(!ok)continue;const perm=S.C.map(c=>{const w=mulM3(R,c);return S.C.findIndex(u=>Math.abs(u[0]-w[0])+Math.abs(u[1]-w[1])+Math.abs(u[2]-w[2])<1e-5)});
+    if(perm.some(p=>p<0))continue;G.push({R,perm})}}
+  return S.G=G}
+const PAL=['#ff4f9a','#ffd23f','#22d3ee','#8b5cf6','#84e04a','#ff8a3d','#ff4d5e','#3b82f6'];
+const PALN=['ชมพู','เหลือง','ฟ้า','ม่วง','เขียว','ส้ม','แดง','น้ำเงิน'];
+const PASTEL=['#ffd6e8','#fff1b8','#cdeeff','#e0d8ff','#dcf6c8','#ffe0c7','#ffd0d4','#d3defe'];
+const SYMS=['F','R','P','L','G','J','4','7'];
+const PLAIN=['#22d3ee','#f472b6','#fbbf24','#a3e635','#8b5cf6','#fb923c'];
+function randomDecor(S,sym){const cs=shuffle(range(PAL.length)),ss=shuffle(range(SYMS.length));return range(S.nF).map(s=>({color:cs[s],sym:sym?ss[s]:-1,mir:false,up:pick(S.ups[s])}))}
+function rotDecor(D,g){const out=[];D.forEach((d,s)=>{out[g.perm[s]]={...d,up:mulM3(g.R,d.up)}});return out}
+function matchD(a,b){return a.color===b.color&&a.sym===b.sym&&!!a.mir===!!b.mir&&(a.sym<0||dot(a.up,b.up)>.95)}
+function equivD(S,A,B,sub){const G=groupOf(S);const idx=sub||range(S.nF);return G.some(g=>{const R=rotDecor(B,g);return idx.every(s=>matchD(A[s],R[s]))})}
+function oppOf(S,s){let best=-1,bd=2;S.N.forEach((n,i)=>{const d=dot(n,S.N[s]);if(d<bd){bd=d;best=i}});return bd<-.99?best:-1}
+function newUp(S,s,old){const c=S.ups[s].filter(u=>!old||dot(u,old)<.95);return pick(c.length?c:S.ups[s])}
+function perturb(S,T,sym,lvl,vis){ // returns [D2, reasonText]
+  const D=T.map(d=>({...d}));const pool=vis||range(S.nF);const oppS=pool.filter(a=>oppOf(S,a)>=0);const kinds={swapAdj:3,swapOpp:oppS.length&&!vis?2:0,hidden:vis?2:0,rot:sym?3:0,mir:sym&&lvl>=3?2:0};
+  const k=wpick(kinds);const swap=(a,b)=>{const t=D[a];D[a]={...D[b],up:sym?newUp(S,a):D[b].up};D[b]={...t,up:sym?newUp(S,b):t.up}};
+  if(k==='swapAdj'){const a=pick(pool);const nbs=S.adj[a].filter(b=>pool.includes(b));const b=nbs.length?pick(nbs):pick(pool.filter(x=>x!==a));swap(a,b);
+    return [D,sym?'ลายของสองหน้าที่อยู่ติดกันสลับที่กัน':`หน้าสี${PALN[T[a].color]}กับสี${PALN[T[b].color]}สลับที่กัน`]}
+  if(k==='swapOpp'){const a=pick(oppS),b=oppOf(S,a);swap(a,b);return [D,S.key==='cube'?'สองหน้าที่อยู่ตรงข้ามกันถูกสลับ ได้เป็นภาพสะท้อน (กลับซ้าย-ขวา) ของรูปทรงจริง':'สองหน้าที่อยู่ตรงข้ามกันถูกสลับตำแหน่ง']}
+  if(k==='hidden'){const hid=range(S.nF).filter(s=>!pool.includes(s));const a=pick(pool),b=pick(hid);swap(a,b);return [D,'มีหน้าหนึ่งอยู่ผิดตำแหน่ง เป็นลายที่ต้องไปอยู่อีกด้านของรูปทรง']}
+  if(k==='rot'){const a=pick(pool);D[a]={...D[a],up:newUp(S,a,D[a].up)};return [D,'ลายบนหน้าหนึ่งหมุนผิดทิศ']}
+  const a=pick(pool);D[a]={...D[a],mir:!D[a].mir};return [D,'ลายบนหน้าหนึ่งกลับด้านเหมือนส่องกระจก']}
+function decorFromSlots(L,D){const S=L.S;return L.faces.map(f=>{const d=D[f.slot],B=S.basis[f.slot];
+  return {fill:PAL[d.color],text:d.sym>=0?SYMS[d.sym]:'',angle:Math.atan2(dot(d.up,B.e2),dot(d.up,B.e1))+f.rot,mirror:d.mir}})}
+function plainDecor(L,color,markBad){return L.faces.map(f=>({fill:markBad&&f.bad?'#ff4d5e':color,bad:markBad&&f.bad}))}
+
+/* ================= drawing: 2D nets ================= */
+function smoothSet(L){const S=L.S;return L.faces.map((f,i)=>{const s=new Set();if(!S.curved.has(f.slot))return s;
+  if(f.parent>=0&&S.curved.has(L.faces[f.parent].slot))s.add(f.ownK);
+  L.faces.forEach(c=>{if(c.parent===i&&S.curved.has(c.slot))s.add(c.pk)});return s})}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function inr(pts){const c=avg2(pts);let m=1e9;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];const l=d2(a,b)||1;const dd=Math.abs((b[0]-a[0])*(a[1]-c[1])-(a[0]-c[0])*(b[1]-a[1]))/l;m=Math.min(m,dd)}return m}
+function netSVG(L,decor,o={}){const fs=L.faces;let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;fs.forEach(f=>f.pts.forEach(p=>{x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1])}));
+  const W=o.w||400,H=o.h||300,pad=14;const k=Math.min((W-2*pad)/(x1-x0||1),(H-2*pad)/(y1-y0||1));const ox=(W-(x1-x0)*k)/2,oy=(H-(y1-y0)*k)/2;
+  const X=x=>((x-x0)*k+ox).toFixed(1),Y=y=>((y1-y)*k+oy).toFixed(1);const sm=smoothSet(L);const sw=Math.max(1.4,Math.min(2.6,k*.035));
+  let polys='',lines='',txt='';
+  fs.forEach((f,i)=>{const d=decor[i]||{};const fill=d.fill||'#ffd23f';polys+=`<polygon points="${f.pts.map(p=>X(p[0])+','+Y(p[1])).join(' ')}" fill="${fill}" stroke="${fill}" stroke-width="0.8"/>`;
+    const m=f.pts.length,kids=new Set();fs.forEach(c=>{if(c.parent===i)kids.add(c.pk)});
+    for(let e=0;e<m;e++){const a=f.pts[e],b=f.pts[(e+1)%m];if(f.parent>=0&&e===f.ownK){if(!sm[i].has(e))lines+=`<line x1="${X(a[0])}" y1="${Y(a[1])}" x2="${X(b[0])}" y2="${Y(b[1])}" stroke="#1a1833" stroke-width="${(sw*.75).toFixed(2)}" stroke-dasharray="${(sw*2.4).toFixed(1)} ${(sw*1.8).toFixed(1)}"/>`;continue}
+      if(kids.has(e))continue;lines+=`<line x1="${X(a[0])}" y1="${Y(a[1])}" x2="${X(b[0])}" y2="${Y(b[1])}" stroke="#1a1833" stroke-width="${sw.toFixed(2)}" stroke-linecap="round"/>`}
+    if(d.text){const c=avg2(f.pts);const fsz=Math.max(9,inr(f.pts)*k*1.15);const deg=-((d.angle||Math.PI/2)-Math.PI/2)*180/Math.PI;
+      txt+=`<g transform="translate(${X(c[0])},${Y(c[1])}) rotate(${deg.toFixed(1)})${d.mirror?' scale(-1,1)':''}"><text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Mitr,sans-serif" font-weight="600" font-size="${fsz.toFixed(1)}" fill="#1a1833" stroke="#fff" stroke-width="${(fsz*.1).toFixed(1)}" paint-order="stroke">${esc(d.text)}</text></g>`}});
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ภาพคลี่">${polys}${lines}${txt}</svg>`}
+
+/* ================= drawing: 3D (realistic, PBR + soft shadows) ================= */
+const TH=.034,BV=.012,GROUND=-1;
+const lin=hex=>new THREE.Color(hex).convertSRGBToLinear();
+const shapeOf=pts=>new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1])));
+function inset(pts,d){const n=pts.length,out=[];for(let i=0;i<n;i++){const a=pts[(i-1+n)%n],b=pts[i],c=pts[(i+1)%n];
+  let n1=[-(b[1]-a[1]),b[0]-a[0]],n2=[-(c[1]-b[1]),c[0]-b[0]];const l1=Math.hypot(...n1),l2=Math.hypot(...n2);n1=[n1[0]/l1,n1[1]/l1];n2=[n2[0]/l2,n2[1]/l2];
+  const r1=a[0]*n1[0]+a[1]*n1[1]+d,r2=b[0]*n2[0]+b[1]*n2[1]+d,det=n1[0]*n2[1]-n1[1]*n2[0];
+  if(Math.abs(det)<1e-9){out.push([b[0]+n1[0]*d,b[1]+n1[1]*d]);continue}
+  const x=(r1*n2[1]-r2*n1[1])/det,y=(n1[0]*r2-n2[0]*r1)/det;if(Math.hypot(x-b[0],y-b[1])>d*5)return null;out.push([x,y])}
+  return out}
+function faceTexture(f,d,poly,smooth){const big=!!d.text,N=big?512:256;const cv=document.createElement('canvas');cv.width=cv.height=N;const g=cv.getContext('2d');
+  const c=avg2(f.pts);const R=Math.max(...f.pts.map(p=>d2(p,c)))*2;const P=p=>[((p[0]-c[0])/R+.5)*N,(1-((p[1]-c[1])/R+.5))*N];
+  g.fillStyle=d.fill;g.fillRect(0,0,N,N);
+  const rg=g.createRadialGradient(N*.42,N*.38,0,N/2,N/2,N*.6);rg.addColorStop(0,'rgba(255,255,255,.16)');rg.addColorStop(1,'rgba(0,0,0,.10)');g.fillStyle=rg;g.fillRect(0,0,N,N);
+  g.lineCap='round';g.strokeStyle='rgba(20,18,50,.55)';g.lineWidth=Math.max(2,N*.012);
+  for(let e=0;e<poly.length;e++){if(smooth.has(e))continue;const a=P(poly[e]),b=P(poly[(e+1)%poly.length]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke()}
+  if(big){const px=Math.min(N*.8,inr(f.pts)*1.2/R*N);g.save();g.translate(N/2,N/2);g.rotate(-((d.angle==null?Math.PI/2:d.angle)-Math.PI/2));if(d.mirror)g.scale(-1,1);
+    g.font=`700 ${px}px "Chakra Petch", sans-serif`;g.textAlign='center';g.textBaseline='middle';g.lineJoin='round';
+    g.lineWidth=px*.14;g.strokeStyle='rgba(255,255,255,.95)';g.strokeText(d.text,0,px*.05);g.fillStyle='#14122b';g.fillText(d.text,0,px*.05);g.restore()}
+  const t=new THREE.CanvasTexture(cv);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t}
+let BACKMAT=null;
+function buildFold(L,decor){const S=L.S,g=new THREE.Group(),objs=[];
+  if(!BACKMAT){BACKMAT=new THREE.MeshStandardMaterial({color:lin('#d4d7ea'),roughness:.85,metalness:0});BACKMAT.userData.keep=true}
+  const sm=smoothSet(L);L.faces.forEach((f,i)=>{const d=decor[i]||{};const curved=S.curved.has(f.slot);const ins=curved?null:inset(f.pts,BV);let body;
+    if(ins){body=new THREE.ExtrudeGeometry(shapeOf(ins),{depth:TH-2*BV,bevelEnabled:true,bevelThickness:BV,bevelSize:BV,bevelSegments:3,curveSegments:1});body.translate(0,0,-(TH-BV)-.0015)}
+    else{body=new THREE.ExtrudeGeometry(shapeOf(f.pts),{depth:TH,bevelEnabled:false,curveSegments:1});body.translate(0,0,-TH-.0015)}
+    const top=new THREE.ShapeGeometry(shapeOf(ins||f.pts));const fill=d.fill||'#22d3ee';
+    const rim=new THREE.MeshPhysicalMaterial({color:lin(fill).multiplyScalar(.82),roughness:.45,metalness:0,clearcoat:.3,clearcoatRoughness:.35,envMapIntensity:.55});
+    let fm;{const c=avg2(f.pts),R=Math.max(...f.pts.map(p=>d2(p,c)))*2;const pos=top.attributes.position,uv=top.attributes.uv;
+        for(let q=0;q<pos.count;q++)uv.setXY(q,(pos.getX(q)-c[0])/R+.5,(pos.getY(q)-c[1])/R+.5);uv.needsUpdate=true;
+        fm=new THREE.MeshPhysicalMaterial({map:faceTexture(f,{...d,fill},ins||f.pts,sm[i]),roughness:.42,metalness:0,clearcoat:.35,clearcoatRoughness:.3,envMapIntensity:.55})}
+    if(d.bad)[fm,rim].forEach(m=>{m.emissive=lin('#ff1744');m.emissiveIntensity=.6});
+    const fg=new THREE.Group();fg.matrixAutoUpdate=false;const mb=new THREE.Mesh(body,[BACKMAT,rim]),mt=new THREE.Mesh(top,fm);
+    [mb,mt].forEach(m=>{m.castShadow=true;m.receiveShadow=true});fg.add(mb,mt);g.add(fg);objs.push(fg)});
+  return {group:g,objs,L}}
+function setFoldT(cur,t){const L=cur.L,W=[];L.faces.forEach((f,i)=>{W[i]=f.parent<0?new THREE.Matrix4():W[f.parent].clone().multiply(hingeM(f.hinge,f.sign*f.alpha*t));cur.objs[i].matrix.copy(W[i]);cur.objs[i].matrixWorldNeedsUpdate=true});return W}
+function disposeObj(o){o.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){const ms=Array.isArray(n.material)?n.material:[n.material];ms.forEach(m=>{if(m.userData&&m.userData.keep)return;if(m.map)m.map.dispose();m.dispose()})}})}
+function makeEnv(r){const pm=new THREE.PMREMGenerator(r);const sc=new THREE.Scene();
+  sc.add(new THREE.Mesh(new THREE.BoxGeometry(12,12,12),new THREE.MeshBasicMaterial({color:lin('#151a3a'),side:THREE.BackSide})));
+  const P=(col,k,pos,w,h)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(col).multiplyScalar(k),side:THREE.DoubleSide}));m.position.set(...pos);m.lookAt(0,0,0);sc.add(m)};
+  P('#ffffff',5,[0,5.5,1.5],6,3.5);P('#5ee7ff',3,[-5.5,1,0],2.5,5);P('#ff6ad5',3,[5.5,1.5,-1],2.5,5);P('#ffe2b8',1.6,[0,1.2,5.5],5,1.6);
+  const rt=pm.fromScene(sc,.035);pm.dispose();return rt.texture}
+function stageTex(){const cv=document.createElement('canvas');cv.width=cv.height=1024;const g=cv.getContext('2d');
+  const rg=g.createRadialGradient(512,512,0,512,512,512);rg.addColorStop(0,'rgba(70,80,170,.62)');rg.addColorStop(.45,'rgba(40,46,110,.42)');rg.addColorStop(1,'rgba(20,24,60,0)');g.fillStyle=rg;g.fillRect(0,0,1024,1024);
+  g.globalCompositeOperation='source-atop';g.strokeStyle='rgba(140,210,255,.16)';g.lineWidth=1.5;for(let x=0;x<=1024;x+=40){g.beginPath();g.moveTo(x,0);g.lineTo(x,1024);g.stroke();g.beginPath();g.moveTo(0,x);g.lineTo(1024,x);g.stroke()}
+  g.globalCompositeOperation='source-over';g.strokeStyle='rgba(94,231,255,.35)';g.lineWidth=3;g.beginPath();g.arc(512,512,300,0,TAU);g.stroke();
+  const t=new THREE.CanvasTexture(cv);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t}
+function setupRenderer(r){r.outputEncoding=THREE.sRGBEncoding;r.toneMapping=THREE.NoToneMapping;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;r.setClearColor(0,0)}
+function makeStage(r){const sc=new THREE.Scene();sc.environment=makeEnv(r);
+  sc.add(new THREE.HemisphereLight(0xc7d6ff,0x1b1530,.32));
+  const key=new THREE.DirectionalLight(0xffffff,.95);key.position.set(3,7,4.5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);const sh=key.shadow.camera;sh.left=sh.bottom=-4;sh.right=sh.top=4;sh.near=1;sh.far=20;key.shadow.bias=-.0004;key.shadow.normalBias=.02;key.shadow.radius=5;sc.add(key);
+  const rim=new THREE.DirectionalLight(0xff7ad9,.75);rim.position.set(-4,3,-5);sc.add(rim);const fill=new THREE.DirectionalLight(0x6be8ff,.45);fill.position.set(-5,2,3);sc.add(fill);
+  const disc=new THREE.Mesh(new THREE.CircleGeometry(5.5,96),new THREE.MeshStandardMaterial({map:stageTex(),transparent:true,roughness:.55,metalness:.2,depthWrite:false}));disc.rotation.x=-Math.PI/2;disc.position.y=GROUND-.003;sc.add(disc);
+  const shp=new THREE.Mesh(new THREE.PlaneGeometry(14,14),new THREE.ShadowMaterial({opacity:.55}));shp.rotation.x=-Math.PI/2;shp.position.y=GROUND;shp.receiveShadow=true;sc.add(shp);
+  const holder=new THREE.Group();holder.matrixAutoUpdate=false;sc.add(holder);return {sc,holder,cur:null}}
+function stageSet(st,L,decor){if(st.cur){st.holder.remove(st.cur.group);disposeObj(st.cur.group)}st.cur=buildFold(L,decor);st.holder.add(st.cur.group);
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;L.faces.forEach(f=>f.pts.forEach(p=>{x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1])}));
+  const s0=2.7/Math.max(x1-x0,y1-y0);st.s0=s0;st.p0=new THREE.Vector3(-(x0+x1)/2*s0,0,(y0+y1)/2*s0);st.q0=new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI/2,0,0));
+  st.p1=new THREE.Vector3();st.q1=new THREE.Quaternion();L.M.decompose(st.p1,st.q1,new THREE.Vector3())}
+function frameOf(P){let x0=1e9,y0=1e9,z0=1e9,x1=-1e9,y1=-1e9,z1=-1e9;P.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y);z0=Math.min(z0,p.z);z1=Math.max(z1,p.z)});
+  const c=new THREE.Vector3((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);let r=0;P.forEach(p=>r=Math.max(r,p.distanceTo(c)));return {center:c,r,hw:(x1-x0)/2,hd:(z1-z0)/2,h:y1-y0}}
+function stagePose(st,t){const W=setFoldT(st.cur,t);const p=new THREE.Vector3().lerpVectors(st.p0,st.p1,t),q=st.q0.clone().slerp(st.q1,t),s=st.s0+(1-st.s0)*t;
+  const H=new THREE.Matrix4().compose(p,q,new THREE.Vector3(s,s,s));const P=[];
+  st.cur.L.faces.forEach((f,i)=>{const M=H.clone().multiply(W[i]);f.pts.forEach(pt=>P.push(new THREE.Vector3(pt[0],pt[1],0).applyMatrix4(M)))});
+  let mn=1e9;P.forEach(v=>mn=Math.min(mn,v.y));const shift=GROUND-mn+TH*s*(1-t);H.elements[13]+=shift;P.forEach(v=>v.y+=shift);
+  st.holder.matrix.copy(H);st.holder.matrixWorldNeedsUpdate=true;return frameOf(P)}
+function fitDist(fr,fov,aspect,pitch){const f=Math.tan(fov*Math.PI/360);
+  if(pitch>1.1)return Math.max(fr.hd/f,fr.hw/(f*aspect))*1.06+fr.h+.15;return fr.r*1.18/Math.sin(Math.atan(f*Math.min(1,aspect)))}
+function camPlace(cam,tg,yaw,pitch,dist){const cp=Math.cos(pitch);cam.position.set(tg.x+dist*Math.sin(yaw)*cp,tg.y+dist*Math.sin(pitch),tg.z+dist*Math.cos(yaw)*cp);cam.lookAt(tg)}
+const THUMB_VIEW={pitch:.5,yaw:-.72},NET_VIEW={pitch:1.3,yaw:0},TFOV=26,TASP=4/3;
+let TR=null;
+function thumb(L,decor,o={}){if(!TR){const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});setupRenderer(r);r.setPixelRatio(1);r.setSize(480,360,false);
+    TR={r,st:makeStage(r),cam:new THREE.PerspectiveCamera(TFOV,TASP,.1,100)}}
+  const net=o.mode==='net';stageSet(TR.st,L,decor);const fr=stagePose(TR.st,net?0:1);const v=o.view||(net?NET_VIEW:THUMB_VIEW);
+  camPlace(TR.cam,fr.center,v.yaw,v.pitch,fitDist(fr,TFOV,TASP,v.pitch));TR.r.render(TR.st.sc,TR.cam);return TR.r.domElement.toDataURL('image/png')}
+function visibleSlots(S,view=THUMB_VIEW){const mn=Math.min(...S.V.map(v=>v[1]));const sh=GROUND-mn;const P=S.V.map(v=>new THREE.Vector3(v[0],v[1]+sh,v[2]));const fr=frameOf(P);
+  const cam=new THREE.PerspectiveCamera(TFOV,TASP,.1,100);camPlace(cam,fr.center,view.yaw,view.pitch,fitDist(fr,TFOV,TASP,view.pitch));
+  return range(S.nF).filter(s=>{const c=new THREE.Vector3(S.C[s][0],S.C[s][1]+sh,S.C[s][2]);return V3(S.N[s]).dot(cam.position.clone().sub(c).normalize())>.2})}
+
+/* ================= question generators ================= */
+const LV_SOLIDS={1:['cube','cuboid','tri_prism','wedge','sq_pyr','tetra','hex_prism','pent_prism','cylinder','cone'],
+  2:['cube','cuboid','house','L','pent_pyr','hex_pyr','octa','frustum','T','tri_prism','trunc_tet','cylinder','cone'],
+  3:['octa','icosa','dodeca','cubocta','trunc_oct','trunc_tet','stair','U','T','frustum','hex_pyr','house']};
+const TYPEW={1:{A:5,B:3,E:2,F:2},2:{A:4,C:3,E:2,F:1,B:1,D:1},3:{A:4,C:2,D:3,F:1}};
+const TYPEN={A:'เลือกภาพคลี่',B:'พับแล้วได้อะไร',C:'จับคู่ลวดลาย',D:'มองภาพหลังพับ',E:'หน้าตรงข้าม',F:'นับส่วนประกอบ'};
+const LAB=['ก','ข','ค','ง'];
+let recent=[];
+function pickSolid(list){const c=list.filter(k=>!recent.includes(k));const k=pick(c.length?c:list);recent=[k,...recent].slice(0,4);return k}
+function genA(lvl){const S=getSolid(pickSolid(LV_SOLIDS[lvl]));const L0=genLayout(S);if(!L0)return null;const col=pick(PLAIN);
+  const W=lvl===1?{move:3,missing:2,extra:2,stretch:2,other:2}:lvl===2?{move:6,stretch:1.5,extra:1,other:.6}:{move:10,stretch:.6};
+  const opts=[{L:L0,correct:true}],sigs=[netSig(L0)];let guard=0;
+  while(opts.length<4&&guard++<60){const kind=wpick(W);const base=rnd()<.7?genLayout(S):L0;if(!base)continue;let D=null;
+    if(kind==='move'){D=dMove(base);if(D&&lvl===3&&rnd()<.35)D=dMove(D)||D}else if(kind==='missing')D=dMissing(base);else if(kind==='extra')D=dExtra(base);else if(kind==='stretch')D=dStretch(base);else D=dOther(base,lvl);
+    if(!D)continue;const sg=netSig(D);if(sigs.includes(sg))continue;sigs.push(sg);opts.push({L:D,correct:false,reason:reasonFor(D,S)})}
+  if(opts.length<4)return null;
+  const options=shuffle(opts).map(o=>({kind:'net',L:o.L,decor:plainDecor(o.L,col),fold:plainDecor(o.L,col,true),correct:o.correct,reason:o.reason||`ถูกต้อง: ${S.desc} พับแล้วทุกขอบประกบกันพอดี`}));
+  return {prompt:`${S.name}นี้ คลี่ออกมาแล้วได้ภาพคลี่แบบใด?`,stim:{kind:'solid',L:L0,decor:plainDecor(L0,col)},options,solTabs:true,
+    tip:S.isCurved?'ทรงกระบอก/กรวย: ความยาวของส่วนที่ม้วนรอบต้องเท่ากับเส้นรอบวงของวงกลมฐาน':'นับจำนวนหน้าก่อน แล้วนึกพับทีละหน้าจากหน้าฐาน ถ้ามีสองหน้าไปทับที่เดียวกัน ภาพคลี่นั้นผิด',S}}
+function genB(lvl){const S=getSolid(pickSolid(LV_SOLIDS[Math.min(lvl,2)]));const L=genLayout(S);if(!L)return null;const col=pick(PLAIN);
+  let others=shuffle(related(S.key));const fill=shuffle(LV_SOLIDS[Math.min(lvl,2)]).filter(k=>k!==S.key&&!others.includes(k));others=[...others,...fill].slice(0,3);
+  const opts=[{S,L,correct:true},...others.map(k=>{const S2=getSolid(k);return {S:S2,L:genLayout(S2),correct:false}})];if(opts.some(o=>!o.L))return null;
+  const options=shuffle(opts).map(o=>({kind:'img',img:thumb(o.L,plainDecor(o.L,col)),alt:o.S.name,correct:o.correct,reason:o.correct?`${o.S.name}: ใช้ ${o.S.desc}`:`${o.S.name} ต้องใช้ ${o.S.desc}`}));
+  return {prompt:'ภาพคลี่นี้ พับแล้วได้รูปทรงใด?',stim:{kind:'net',L,decor:plainDecor(L,col)},options,fold:{L,decor:plainDecor(L,col)},tip:`ภาพคลี่นี้มี ${S.desc} จึงพับได้เป็น${S.name}`,S}}
+function genC(lvl){const sym=lvl>=3;const S=getSolid(pick(sym?['cube','cube','octa','tri_prism','cuboid']:['cube','cube','tri_prism','octa','sq_pyr','hex_prism']));
+  const T=randomDecor(S,sym);const L0=genLayout(S);if(!L0)return null;const opts=[{L:L0,D:T,correct:true}];let guard=0;
+  while(opts.length<4&&guard++<200){const [D2,why]=perturb(S,T,sym,lvl,null);if(opts.some(o=>equivD(S,D2,o.D)))continue;const L=(lvl>=3&&rnd()<.6)?genLayout(S):L0;if(!L)continue;opts.push({L,D:D2,correct:false,reason:why})}
+  if(opts.length<4)return null;
+  const options=shuffle(opts).map(o=>({kind:'net',L:o.L,decor:decorFromSlots(o.L,o.D),fold:decorFromSlots(o.L,o.D),correct:o.correct,reason:o.reason||'ทุกหน้าอยู่ถูกตำแหน่งและหันถูกทิศ'}));
+  return {prompt:`${S.name}ที่มีลวดลายนี้ (ลากหมุนดูได้ทุกด้าน) คลี่ออกมาตรงกับภาพคลี่ใด?`,stim:{kind:'solid',L:L0,decor:decorFromSlots(L0,T)},options,solTabs:true,
+    tip:sym?'ดูทีละมุม: สามหน้าที่มาชนกันที่มุมเดียว ต้องเรียงลำดับและหันทิศเหมือนกันทั้งบนรูปทรงและภาพคลี่':'หน้าที่ติดกันในภาพคลี่จะติดกันบนรูปทรงด้วย ส่วนลูกบาศก์ หน้าที่อยู่แถวเดียวกันโดยเว้น 1 ช่อง คือหน้าตรงข้าม',S}}
+function genD(lvl){const sym=lvl>=3;const S=getSolid(sym?pick(['cube','cube','octa','cuboid']):'cube');const T=randomDecor(S,sym);const L=genLayout(S);if(!L)return null;
+  const view=S.key==='octa'?{pitch:.95,yaw:.98}:THUMB_VIEW;const vis=visibleSlots(S,view);const G=groupOf(S);const opts=[{D:rotDecor(T,pick(G)),correct:true}];const key=D=>vis.map(s=>[D[s].color,D[s].sym,D[s].mir,D[s].up.map(v=>v.toFixed(2))].join('|')).join(';');
+  const keys=[key(opts[0].D)];let guard=0;
+  while(opts.length<4&&guard++<200){const [D2,why]=perturb(S,rotDecor(T,pick(G)),sym,lvl,vis);if(equivD(S,D2,T,vis))continue;const kk=key(D2);if(keys.includes(kk))continue;keys.push(kk);opts.push({D:D2,correct:false,reason:why})}
+  if(opts.length<4)return null;
+  const options=shuffle(opts).map(o=>({kind:'img',img:thumb(L,decorFromSlots(L,o.D),{view}),alt:'มุมมองรูปทรง',correct:o.correct,reason:o.reason||'หมุนรูปทรงที่พับได้ไปมุมหนึ่งแล้วเห็นเป็นภาพนี้พอดี'}));
+  return {prompt:`พับภาพคลี่นี้เป็น${S.name}แล้ว ภาพใดเป็นไปได้?`,stim:{kind:'net',L,decor:decorFromSlots(L,T)},options,fold:{L,decor:decorFromSlots(L,T)},
+    tip:'เลือกมุมหนึ่งของภาพในตัวเลือก แล้วหาหน้าทั้งสามในภาพคลี่ ดูว่าเรียงวนตามเข็มหรือทวนเข็มนาฬิกา และลายหันไปทางขอบไหน',S}}
+function genE(lvl){const S=getSolid(pick(lvl===1?['cube','cube','cuboid']:['cube','octa','cuboid','octa']));const L=genLayout(S);if(!L)return null;
+  const nums=shuffle(range(S.nF).map(i=>i+1));const a=ri(S.nF),b=oppOf(S,a);const others=shuffle(range(S.nF).filter(s=>s!==a&&s!==b)).slice(0,3);
+  const decor=L.faces.map(f=>({fill:f.slot===a?'#fbbf24':'#e6e9fb',text:String(nums[f.slot]),angle:Math.PI/2}));
+  const options=shuffle([b,...others]).map(s=>({kind:'tile',text:String(nums[s]),correct:s===b,reason:s===b?`หน้า ${nums[s]} อยู่ตรงข้ามกับหน้า ${nums[a]}`:`หน้า ${nums[s]} อยู่ติดกับหน้า ${nums[a]}`}));
+  return {prompt:`เมื่อพับเป็น${S.name}แล้ว หน้าใดอยู่ตรงข้ามกับหน้า ${nums[a]} (สีเหลือง)?`,stim:{kind:'net',L,decor},options,fold:{L,decor},
+    tip:S.key==='octa'?'ทรงแปดหน้า: หน้าตรงข้ามจะขนานกันและไม่มีจุดยอดร่วมกันเลย':'ลูกบาศก์/ทรงสี่เหลี่ยมมุมฉาก: หน้าที่อยู่แถวเดียวกันโดยเว้น 1 ช่อง คือหน้าตรงข้าม และหน้าตรงข้ามจะไม่แตะกันในภาพคลี่',S}}
+function genF(lvl){const S=getSolid(pickSolid(LV_SOLIDS[lvl].filter(k=>!DEFS[k].curved)));const L=genLayout(S);if(!L)return null;const col=pick(PLAIN);
+  const ask=pick(lvl===1?['V','E','F']:['V','E']);const val={V:S.nV,E:S.nE,F:S.nF}[ask];const word={V:'จุดยอดกี่จุด',E:'ขอบ (สัน) กี่เส้น',F:'หน้ากี่หน้า'}[ask];
+  const c=[...new Set([val-2,val-1,val+1,val+2,S.nV,S.nE,S.nF,val+4,val-4].filter(x=>x>0&&x!==val))];const ds=shuffle(c).slice(0,3);
+  const options=shuffle([val,...ds]).map(x=>({kind:'num',text:String(x),correct:x===val,reason:x===val?'ถูกต้อง':'จำนวนไม่ตรง'}));
+  return {prompt:`พับภาพคลี่นี้แล้ว รูปทรงที่ได้มี${word}?`,stim:{kind:'net',L,decor:plainDecor(L,col)},options,fold:{L,decor:plainDecor(L,col)},
+    tip:`${S.name}: จุดยอด V = ${S.nV}, ขอบ E = ${S.nE}, หน้า F = ${S.nF} ตรวจด้วยสูตรออยเลอร์ V − E + F = ${S.nV}−${S.nE}+${S.nF} = ${S.nV-S.nE+S.nF} · เคล็ดลับ: นับด้านของทุกรูปในภาพคลี่ แล้วหารสอง จะได้จำนวนขอบ`,S}}
+const GEN={A:genA,B:genB,C:genC,D:genD,E:genE,F:genF};
+function makeQuestion(lvl){for(let t=0;t<14;t++){const type=wpick(TYPEW[lvl]);try{const q=GEN[type](lvl);if(q){q.type=type;return q}}catch(e){console.warn('gen',type,e)}}throw new Error('สร้างโจทย์ไม่สำเร็จ')}
+
+/* ================= 3D viewer ================= */
+const VW={};
+function initViewer(){const r=new THREE.WebGLRenderer({antialias:true,alpha:true});setupRenderer(r);r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));VW.r=r;
+  VW.st=makeStage(r);VW.cam=new THREE.PerspectiveCamera(30,1,.1,100);VW.tg=new THREE.Vector3(0,-.4,0);VW.dist=6;VW.zoom=1;
+  VW.yaw=-.6;VW.pitch=.45;VW.t=1;VW.play=false;VW.auto=true;VW.drag=null;VW.dirty=true;
+  const el=r.domElement;el.addEventListener('pointerdown',e=>{VW.drag={x:e.clientX,y:e.clientY};el.setPointerCapture(e.pointerId);el.style.cursor='grabbing';hideTip()});
+  el.addEventListener('pointermove',e=>{if(!VW.drag)return;VW.yaw-=(e.clientX-VW.drag.x)*.01;VW.pitch=Math.max(.06,Math.min(1.48,VW.pitch+(e.clientY-VW.drag.y)*.01));VW.drag={x:e.clientX,y:e.clientY};VW.auto=false});
+  const up=()=>{VW.drag=null;el.style.cursor='grab'};el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+  el.addEventListener('wheel',e=>{e.preventDefault();VW.zoom=Math.max(.6,Math.min(1.7,VW.zoom*(e.deltaY>0?1.08:.93)))},{passive:false});
+  VW.ro=new ResizeObserver(sizeViewer);requestAnimationFrame(loop)}
+function sizeViewer(){if(!VW.el)return;const w=VW.el.clientWidth,h=VW.el.clientHeight;if(!w||!h)return;VW.r.setSize(w,h,false);VW.cam.aspect=w/h;VW.cam.updateProjectionMatrix();if(VW.cur)refit()}
+function mountViewer(el){el.appendChild(VW.r.domElement);VW.ro.disconnect();VW.ro.observe(el);VW.el=el;sizeViewer()}
+function refit(){const a=VW.cam.aspect||1;if(VW.mode==='fold'){const d0=fitDist(stagePose(VW.st,0),30,a,VW.pitch),d1=fitDist(stagePose(VW.st,1),30,a,VW.pitch);VW.dist=Math.max(d0,d1)}
+  else VW.dist=fitDist(stagePose(VW.st,VW.mode==='net'?0:1),30,a,VW.pitch)*(VW.mode==='solid'?1.3:1.08);const fr=stagePose(VW.st,ease(VW.t));VW.tg.copy(fr.center)}
+function viewerShow(L,decor,mode,o={}){stageSet(VW.st,L,decor);VW.cur=VW.st.cur;VW.mode=mode;VW.loopFold=!!o.loop;VW.hold=0;VW.zoom=1;
+  if(mode==='fold'){VW.t=0;VW.play=!!o.play;VW.dir=1;VW.auto=!!o.loop;VW.pitch=o.pitch??.72;VW.yaw=o.yaw??-.35}
+  else if(mode==='net'){VW.t=0;VW.play=false;VW.auto=false;VW.pitch=NET_VIEW.pitch;VW.yaw=0}
+  else{VW.t=1;VW.play=false;VW.auto=true;VW.pitch=.42;VW.yaw=-.6}
+  refit();applyT()}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function applyT(){if(!VW.cur)return;VW.fr=stagePose(VW.st,ease(VW.t));
+  const sl=document.getElementById('foldT');if(sl&&VW.mode==='fold'&&VW.el&&VW.el.id==='stimBox'){sl.value=Math.round(VW.t*100);document.getElementById('foldPct').textContent=Math.round(VW.t*100)+'%'}}
+let lastTs=0;
+function loop(ts){requestAnimationFrame(loop);const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;const el=VW.r.domElement;if(!el.isConnected||el.offsetParent===null||!VW.cur)return;
+  if(VW.play){if(VW.hold>0){VW.hold-=dt;if(VW.hold<=0&&!VW.loopFold)VW.play=false}else{VW.t+=VW.dir*dt/2.6;if(VW.t>=1){VW.t=1;VW.hold=1.6;if(VW.loopFold)VW.dir=-1}else if(VW.t<=0){VW.t=0;VW.hold=.9;VW.dir=1}}applyT();if(!VW.play)setPlayLabel()}
+  if(VW.auto&&!VW.drag)VW.yaw+=dt*.35;if(VW.fr)VW.tg.lerp(VW.fr.center,.12);camPlace(VW.cam,VW.tg,VW.yaw,VW.pitch,VW.dist*VW.zoom);VW.r.render(VW.st.sc,VW.cam)}
+function hideTip(){const t=document.querySelector('.drag-tip');if(t)t.remove()}
+
+/* ================= game state ================= */
+const $=id=>document.getElementById(id);
+const LVN={1:'ม.ต้น',2:'ม.ปลาย',3:'มหาวิทยาลัย'};
+const PRAISE=['สุดยอด! มองทะลุมิติเลย','เป๊ะมาก! สายตาวิศวกรชัด ๆ','ถูกต้อง! สมองสามมิติทำงานเต็มสูบ','เยี่ยม! พับในหัวคล่องขึ้นทุกข้อ','ปังมาก! ตอบได้ไวและแม่น','ใช่เลย! เก่งเกินวัยไปแล้ว'];
+const ENCOURAGE=['ไม่เป็นไร ลองนึกภาพพับทีละหน้าดูนะ','เกือบแล้ว! ดูเฉลยแบบพับ แล้วข้อหน้าเอาคืน','คนที่เก่งทุกคนเคยผิดมาก่อน สู้ต่อ!','ลองจับตาหน้าที่อยู่ตรงข้ามกันดู จะเห็นทางเร็วขึ้น','สมองกำลังอัปเกรดอยู่ อย่าเพิ่งยอมแพ้','ข้อนี้ยากจริง ดูเฉลยสักรอบแล้วจะจำได้แม่น'];
+const RANKS=[[0,'มือใหม่หัดพับ'],[1500,'นักพับกระดาษ'],[5000,'สถาปนิกฝึกหัด'],[12000,'วิศวกรสามมิติ'],[25000,'ปรมาจารย์ภาพคลี่']];
+const rankOf=xp=>RANKS.filter(r=>xp>=r[0]).pop()[1];
+let G={lvl:1,player:'',licensed:false};let SESS=null,Q=null,timer=null;
+function players(){return store.get('nf.players',{})}
+function savePlayers(p){store.set('nf.players',p)}
+function blankP(name){return {name,games:0,answered:0,correct:0,xp:0,best:{1:0,2:0,3:0},bestStreak:0,time:0,byType:{},history:[]}}
+function getP(name){const ps=players();return ps[name]||blankP(name)}
+function putP(p){const ps=players();ps[p.name]=p;savePlayers(ps)}
+function show(id){['s-home','s-game','s-result','s-stats'].forEach(s=>$(s).hidden=s!==id);window.scrollTo({top:0,behavior:'smooth'})}
+
+function renderHome(){show('s-home');mountViewer($('heroView'));const S=getSolid('cube');const L=heroLayout(S);
+  viewerShow(L,L.faces.map((f,i)=>({fill:['#22d3ee','#f472b6','#fbbf24','#8b5cf6','#a3e635','#fb923c'][i]})),'fold',{play:true,loop:true,pitch:.62,yaw:-.5});
+  const ps=Object.values(players()).sort((a,b)=>b.xp-a.xp);$('pchips').innerHTML=ps.map(p=>`<button type="button" class="pchip${p.name===G.player?' on':''}" data-n="${esc(p.name)}">${esc(p.name)}</button>`).join('');
+  $('pname').value=G.player||'';updateLevels();updateChips()}
+function heroLayout(S){for(let i=0;i<30;i++){const L=genLayout(S);const xs=L.faces.map(f=>avg2(f.pts));const w=Math.max(...xs.map(p=>p[0]))-Math.min(...xs.map(p=>p[0])),h=Math.max(...xs.map(p=>p[1]))-Math.min(...xs.map(p=>p[1]));if(Math.max(w,h)>=3.5)return L}return genLayout(S)}
+function updateLevels(){document.querySelectorAll('.lvl').forEach(b=>{const l=+b.dataset.l;b.classList.toggle('on',l===G.lvl);const lk=b.querySelector('.lock');if(!G.licensed&&l>1){if(!lk)b.insertAdjacentHTML('beforeend','<span class="lock">ล็อก</span>')}else if(lk)lk.remove()});
+  $('trialBar').hidden=G.licensed}
+function updateChips(){$('whoChip').textContent='ผู้เล่น: '+(G.player||'—');const c=$('licChip');c.textContent=G.licensed?'ฉบับเต็ม':'โหมดทดลอง · ปลดล็อก';c.classList.toggle('ok',G.licensed)}
+
+function startGame(){const name=$('pname').value.trim();if(!name){$('startNote').textContent='ใส่ชื่อผู้เล่นก่อนนะ';$('pname').focus();return}
+  if(!G.licensed&&G.lvl>1){openLock();return}
+  G.player=name;store.set('nf.last',{player:name,lvl:G.lvl});updateChips();$('startNote').textContent='';
+  SESS={lvl:G.lvl,n:G.licensed?10:5,i:0,score:0,streak:0,best:0,correct:0,time:0,byType:{},hints:0};nextQ()}
+function nextQ(){if(SESS.i>=SESS.n){endGame();return}
+  show('s-game');let q;try{q=makeQuestion(SESS.lvl)}catch(e){console.error(e);q=makeQuestion(1)}Q=q;Q.done=false;Q.hint=false;Q.t0=performance.now();SESS.i++;
+  $('hQ').textContent=`ข้อ ${SESS.i}/${SESS.n}`;$('hProg').style.width=((SESS.i-1)/SESS.n*100)+'%';$('hScore').textContent=SESS.score;$('hStreak').textContent=SESS.streak;
+  $('qTag').textContent=TYPEN[q.type];$('qText').textContent=q.prompt;$('fb').hidden=true;$('after').hidden=true;$('explain').hidden=true;$('solCtl').hidden=true;$('btnHint').disabled=false;
+  renderStim();renderOpts();clearInterval(timer);timer=setInterval(()=>{if(!Q.done)$('hTime').textContent=((performance.now()-Q.t0)/1000).toFixed(1)},100)}
+function renderStim(){const box=$('stimBox');box.innerHTML='';
+  if(Q.stim.kind==='solid'){mountViewer(box);viewerShow(Q.stim.L,Q.stim.decor,'solid');box.insertAdjacentHTML('beforeend','<span class="drag-tip">ลากเพื่อหมุนดูรอบทิศ</span>')}
+  else{mountViewer(box);viewerShow(Q.stim.L,Q.stim.decor,'net');box.insertAdjacentHTML('beforeend','<span class="drag-tip">ลากเพื่อเอียงดู · เลื่อนลูกกลิ้งเพื่อซูม</span>')}}
+function renderOpts(){const o=$('opts');o.innerHTML='';Q.options.forEach((op,i)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('aria-label','ตัวเลือก '+LAB[i]);
+    let inner='';if(op.kind==='net')inner=`<img src="${thumb(op.L,op.decor,{mode:'net'})}" alt="ภาพคลี่ตัวเลือก ${LAB[i]}">`;else if(op.kind==='img')inner=`<img src="${op.img}" alt="${esc(op.alt)}">`;else if(op.kind==='tile')inner=`<span class="tile">${esc(op.text)}</span>`;else inner=`<span class="num">${esc(op.text)}</span>`;
+    b.innerHTML=`<span class="lab">${LAB[i]}</span><div class="ov">${inner}</div>`;b.onclick=()=>answer(i);o.appendChild(b)})}
+function useHint(){if(Q.done||Q.hint)return;Q.hint=true;SESS.hints++;$('btnHint').disabled=true;const btns=[...$('opts').children];const wr=shuffle(range(4).filter(i=>!Q.options[i].correct));btns[wr[0]].classList.add('out');btns[wr[0]].disabled=true}
+function answer(i){if(Q.done)return;Q.done=true;clearInterval(timer);const dt=(performance.now()-Q.t0)/1000;$('hTime').textContent=dt.toFixed(1);const ok=Q.options[i].correct;
+  const base={1:100,2:150,3:200}[SESS.lvl];let pts=0;
+  if(ok){SESS.streak++;SESS.best=Math.max(SESS.best,SESS.streak);SESS.correct++;const tb=Math.max(0,1-dt/45)*.5;const sb=Math.min(.5,(SESS.streak-1)*.1);pts=Math.round(base*(1+tb+sb)*(Q.hint?.5:1));SESS.score+=pts}else SESS.streak=0;
+  SESS.time+=dt;const bt=SESS.byType[Q.type]||(SESS.byType[Q.type]={n:0,c:0});bt.n++;if(ok)bt.c++;
+  const btns=[...$('opts').children];btns.forEach((b,j)=>{b.disabled=true;if(Q.options[j].correct)b.classList.add('right');else if(j===i)b.classList.add('wrong')});
+  btns[i].insertAdjacentHTML('beforeend',`<span class="mark" style="background:${ok?'var(--good)':'var(--bad)'}">${ok?'ถูก':'ผิด'}</span>`);
+  const msg=ok?(SESS.streak>=3?`ติดไฟ! ถูกติดกัน ${SESS.streak} ข้อ · `+pick(PRAISE):pick(PRAISE)):pick(ENCOURAGE);
+  const fb=$('fb');fb.className='fb '+(ok?'ok':'no');fb.innerHTML=`<span>${esc(msg)}</span><span class="pts">${ok?'+'+pts:'+0'}</span>`;fb.hidden=false;
+  $('hScore').textContent=SESS.score;$('hStreak').textContent=SESS.streak;$('hProg').style.width=(SESS.i/SESS.n*100)+'%';$('after').hidden=false;$('btnHint').disabled=true;
+  $('btnNext').textContent=SESS.i>=SESS.n?'ดูผลคะแนน':'ข้อต่อไป';
+  if(ok)confetti();else showSolution(i);renderExplain(i);$('explain').hidden=ok;$('btnSol').textContent=ok?'ดูเฉลยแบบพับ':'ซ่อนเฉลย'}
+function showSolution(pickIdx){Q.solOpen=true;const box=$('stimBox');box.innerHTML='';mountViewer(box);$('solCtl').hidden=false;const tabs=$('solTabs');
+  if(Q.solTabs){const ci=Q.options.findIndex(o=>o.correct);tabs.innerHTML='<span>ดูการพับของ:</span>'+Q.options.map((o,i)=>`<button type="button" class="stab ${o.correct?'ok':'no'}" data-i="${i}">${LAB[i]}</button>`).join('');
+    const sel=i=>{[...tabs.querySelectorAll('.stab')].forEach(b=>b.classList.toggle('on',+b.dataset.i===i));const o=Q.options[i];viewerShow(o.L,o.fold,'fold',{play:true})};
+    tabs.onclick=e=>{const b=e.target.closest('.stab');if(b)sel(+b.dataset.i)};sel(pickIdx!=null&&!Q.options[pickIdx].correct&&Q.type==='A'?pickIdx:ci)}
+  else{tabs.innerHTML='<span>พับภาพคลี่ของโจทย์ให้ดู · ลากเพื่อหมุน</span>';viewerShow(Q.fold.L,Q.fold.decor,'fold',{play:true})}
+  setPlayLabel();$('explain').hidden=false;$('btnSol').textContent='ซ่อนเฉลย'}
+function hideSolution(){Q.solOpen=false;$('solCtl').hidden=true;renderStim();$('explain').hidden=true;$('btnSol').textContent='ดูเฉลยแบบพับ'}
+function setPlayLabel(){$('btnPlay').textContent=VW.play?'หยุด':(VW.t>=1?'พับอีกครั้ง':'เล่นการพับ')}
+function renderExplain(){const ci=Q.options.findIndex(o=>o.correct);let h=`<h3>เฉลย: ตัวเลือก ${LAB[ci]}</h3><ul>`;
+  Q.options.forEach((o,i)=>{h+=`<li class="${o.correct?'y':'n'}"><b>${LAB[i]}</b><span>${o.correct?'<strong>ถูก</strong> · ':'<strong>ผิด</strong> · '}${esc(o.reason)}</span></li>`});
+  h+=`</ul><p class="tip"><strong>เคล็ดลับ:</strong> ${esc(Q.tip)}</p>`;$('explain').innerHTML=h}
+function endGame(){clearInterval(timer);const p=getP(G.player);const acc=SESS.correct/SESS.n;
+  p.games++;p.answered+=SESS.n;p.correct+=SESS.correct;p.xp+=SESS.score;p.time+=SESS.time;const prevBest=p.best[SESS.lvl]||0;p.best[SESS.lvl]=Math.max(prevBest,SESS.score);p.bestStreak=Math.max(p.bestStreak,SESS.best);
+  Object.entries(SESS.byType).forEach(([k,v])=>{const t=p.byType[k]||(p.byType[k]={n:0,c:0});t.n+=v.n;t.c+=v.c});
+  p.history=[...p.history,{d:Date.now(),lvl:SESS.lvl,score:SESS.score,acc}].slice(-30);putP(p);
+  show('s-result');$('rScore').textContent=SESS.score;$('rLevel').textContent='ระดับ '+LVN[SESS.lvl]+(G.licensed?'':' (ทดลอง)');$('rRank').textContent=rankOf(p.xp);
+  const stars=acc>=.9?3:acc>=.7?2:acc>=.4?1:0;$('rStars').innerHTML=range(3).map(i=>`<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2 6.1 20.4l1.3-6.5L2.5 9.3l6.6-.8z" fill="${i<stars?'url(#sg)':'rgba(255,255,255,.08)'}" stroke="rgba(255,255,255,.35)" stroke-width="1.8" stroke-linejoin="round"/></svg>`).join('');
+  $('rMsg').textContent=acc>=.9?`${G.player} สุดยอดมาก! สายตาสามมิติระดับเซียน`:acc>=.7?`เก่งมาก ${G.player}! อีกนิดเดียวก็เต็ม`:acc>=.4?`ดีขึ้นเรื่อย ๆ ${G.player} ดูเฉลยแบบพับบ่อย ๆ จะไวขึ้นมาก`:`เริ่มต้นได้ดีแล้ว ${G.player} ฝึกอีกสองสามรอบ ฝีมือจะพุ่งแน่นอน`;
+  $('rBest').textContent=SESS.score>prevBest&&prevBest>0?`ทำลายสถิติเดิม ${prevBest} คะแนน!`:`สถิติสูงสุดระดับนี้: ${p.best[SESS.lvl]} คะแนน`;
+  $('rTiles').innerHTML=tile('ตอบถูก',`${SESS.correct}/${SESS.n}`)+tile('ความแม่นยำ',Math.round(acc*100)+'%')+tile('เวลาเฉลี่ย',(SESS.time/SESS.n).toFixed(1)+' วิ')+tile('ถูกติดกันสูงสุด',SESS.best);
+  $('rBars').innerHTML=bars(SESS.byType);if(stars>=2)confetti(160)}
+const tile=(k,v)=>`<div class="ktile"><small>${k}</small><b>${v}</b></div>`;
+function bars(bt){const ks=Object.keys(TYPEN).filter(k=>bt[k]&&bt[k].n);if(!ks.length)return '<p class="empty">ยังไม่มีข้อมูล</p>';
+  return ks.map(k=>{const v=bt[k],a=v.c/v.n;return `<div class="brow"><span>${TYPEN[k]}</span><div class="btrack"><i style="width:${Math.round(a*100)}%;background:${a>=.7?'linear-gradient(90deg,#34d399,#a3e635)':a>=.4?'linear-gradient(90deg,#fbbf24,#fb923c)':'linear-gradient(90deg,#f472b6,#fb7185)'}"></i></div><span>${v.c}/${v.n}</span></div>`}).join('')}
+let lbLvl=1;
+function renderStats(){show('s-stats');const name=G.player||$('pname').value.trim()||Object.keys(players())[0]||'';const p=name?getP(name):blankP('—');
+  $('stName').textContent=p.name;$('stRank').textContent=rankOf(p.xp);
+  $('stTiles').innerHTML=tile('รอบที่เล่น',p.games)+tile('ความแม่นยำรวม',p.answered?Math.round(p.correct/p.answered*100)+'%':'—')+tile('แต้มสะสม (XP)',p.xp.toLocaleString('th-TH'))+tile('ถูกติดกันสูงสุด',p.bestStreak);
+  $('stBars').innerHTML=bars(p.byType);$('stChart').innerHTML=histChart(p.history.slice(-15));
+  $('lbSeg').innerHTML=[1,2,3].map(l=>`<button type="button" class="btn sm ${l===lbLvl?'pri':''}" data-l="${l}">${LVN[l]}</button>`).join('');
+  const rows=Object.values(players()).filter(x=>x.best[lbLvl]>0).sort((a,b)=>b.best[lbLvl]-a.best[lbLvl]);
+  $('lbBody').innerHTML=rows.length?rows.map((x,i)=>`<tr><td>${i+1}</td><td><strong>${esc(x.name)}</strong></td><td>${rankOf(x.xp)}</td><td class="n">${x.best[lbLvl]}</td><td class="n">${x.answered?Math.round(x.correct/x.answered*100)+'%':'—'}</td><td class="n">${x.games}</td></tr>`).join(''):`<tr><td colspan="6" class="empty">ยังไม่มีใครเล่นระดับ ${LVN[lbLvl]}</td></tr>`}
+function histChart(h){if(!h.length)return '<p class="empty">เล่นจบสักรอบ แล้วกราฟจะขึ้นที่นี่</p>';const W=440,H=180,pl=40,pb=24,pt=12,pr=10;const mx=Math.max(...h.map(x=>x.score),100);const nice=Math.ceil(mx/500)*500;
+  const x=i=>pl+(h.length===1?(W-pl-pr)/2:i*(W-pl-pr)/(h.length-1)),y=v=>pt+(H-pt-pb)*(1-v/nice);const lc={1:'#22d3ee',2:'#fbbf24',3:'#f472b6'};
+  let g='';for(let k=0;k<=4;k++){const v=nice*k/4;g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.08)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#a3abd2" font-family="Chakra Petch,sans-serif">${v}</text>`}
+  const path=h.map((d,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(d.score).toFixed(1)}`).join('');const area=path+`L${x(h.length-1).toFixed(1)},${y(0)}L${x(0).toFixed(1)},${y(0)}Z`;
+  const dots=h.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.score)}" r="${i===h.length-1?6:4}" fill="${lc[d.lvl]}" stroke="#060816" stroke-width="2"><title>${LVN[d.lvl]}: ${d.score} คะแนน (${Math.round(d.acc*100)}%)</title></circle>`).join('');
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:300px;height:auto">${g}<path d="${area}" fill="rgba(139,92,246,.18)"/><path d="${path}" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round"/>${dots}</svg></div><p class="note" style="margin-top:4px">จุดสีฟ้า = ม.ต้น · เหลือง = ม.ปลาย · ชมพู = มหาวิทยาลัย</p>`}
+
+/* ================= confetti ================= */
+function confetti(n=90){if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const cv=$('confetti'),g=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+  const ps=range(n).map(()=>({x:innerWidth/2+(rnd()-.5)*200,y:innerHeight*.35,vx:(rnd()-.5)*14,vy:-rnd()*14-4,r:rnd()*6+4,c:pick(PAL),a:rnd()*6,va:(rnd()-.5)*.4}));let f=0;
+  (function step(){g.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.vy+=.45;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;g.save();g.translate(p.x,p.y);g.rotate(p.a);g.fillStyle=p.c;g.fillRect(-p.r/2,-p.r/3,p.r,p.r*.66);g.restore()});if(++f<110)requestAnimationFrame(step);else g.clearRect(0,0,cv.width,cv.height)})()}
+
+/* ================= license (1 code per device) ================= */
+const PUB_JWK={"kty":"EC","x":"i2ecgmOsHIR41e9yAmvsGb0wUU_RWCZHgFYVQAnoUmY","y":"O5QUUBmgk-cqvn9GGMF5woAT1ZqrXkkywO2fvoSK0T0","crv":"P-256"};
+const LIC_MSG='NETFOLD|v1|';
+const SELLER_CONTACT='';
+const B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32(bytes,n){let bits=0,val=0,out='';for(const b of bytes){val=(val<<8)|b;bits+=8;while(bits>=5){out+=B32[(val>>>(bits-5))&31];bits-=5;if(out.length>=n)return out}}return out}
+function b64uDec(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s);return Uint8Array.from(bin,c=>c.charCodeAt(0))}
+async function fpPart(){const ua=navigator.userAgent;const os=/Android/i.test(ua)?'and':/iPhone|iPad|iPod/i.test(ua)||(/Mac/.test(navigator.platform)&&navigator.maxTouchPoints>1)?'ios':/Mac/.test(ua)?'mac':/CrOS/.test(ua)?'cros':/Win/.test(ua)?'win':/Linux/.test(ua)?'lin':'oth';
+  let gl='nogl';try{const c=document.createElement('canvas');const x=c.getContext('webgl');const e=x.getExtension('WEBGL_debug_renderer_info');gl=String(e?x.getParameter(e.UNMASKED_RENDERER_WEBGL):x.getParameter(x.RENDERER)).toLowerCase().replace(/\s+/g,'');const lc=x.getExtension('WEBGL_lose_context');if(lc)lc.loseContext()}catch(e){}
+  const s=[os,navigator.hardwareConcurrency||0,navigator.deviceMemory||0,navigator.maxTouchPoints||0,gl].join('|');
+  const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));return b32(h,5)}
+async function deviceId(){const fp=await fpPart();let tok=store.get('nf.tok',null);if(!tok||!/^[A-Z2-7]{5}$/.test(tok)){tok=b32(crypto.getRandomValues(new Uint8Array(8)),5);store.set('nf.tok',tok)}return fp+'-'+tok}
+async function verifyCode(raw){const code=String(raw||'').replace(/\s+/g,'');const m=code.match(/^([A-Z2-7]{5})-([A-Z2-7]{5})~([A-Za-z0-9_-]{80,90})$/);
+  if(!m)return {ok:false,msg:'รูปแบบรหัสไม่ถูกต้อง ตรวจว่าคัดลอกมาครบทั้งหมด'};
+  if(!(window.crypto&&crypto.subtle))return {ok:false,msg:'เบราว์เซอร์นี้ตรวจรหัสไม่ได้ (ต้องเปิดผ่านลิงก์ https)'};
+  const fp=await fpPart();if(m[1]!==fp)return {ok:false,msg:'รหัสนี้ออกให้เครื่องอื่น ใช้กับเครื่องนี้ไม่ได้'};
+  try{const key=await crypto.subtle.importKey('jwk',PUB_JWK,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+    const good=await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,b64uDec(m[3]),new TextEncoder().encode(LIC_MSG+m[1]+'-'+m[2]));
+    if(!good)return {ok:false,msg:'รหัสปลดล็อกไม่ถูกต้อง'};store.set('nf.tok',m[2]);store.set('nf.lic',code);return {ok:true}}catch(e){return {ok:false,msg:'ตรวจรหัสไม่สำเร็จ ลองใหม่อีกครั้ง'}}}
+async function openLock(){$('lockModal').hidden=false;$('licMsg').textContent='';$('devId').textContent='…';$('devId').textContent=await deviceId();
+  if(SELLER_CONTACT){$('sellerNote').hidden=false;$('sellerNote').textContent='ติดต่อผู้ขาย: '+SELLER_CONTACT}
+  if(G.licensed){$('licMsg').className='msg ok';$('licMsg').textContent='เครื่องนี้ปลดล็อกแล้ว เล่นได้ครบทุกระดับ'}}
+async function copyText(t,btn){try{await navigator.clipboard.writeText(t);btn.textContent='คัดลอกแล้ว'}catch(e){const r=document.createRange();r.selectNodeContents($('devId'));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='กด Ctrl+C / คัดลอก'}setTimeout(()=>btn.textContent='คัดลอก',1800)}
+
+/* ================= wiring ================= */
+async function boot(){initViewer();try{await document.fonts.ready}catch(e){}
+  const last=store.get('nf.last',null);if(last){G.player=last.player||'';G.lvl=last.lvl||1}
+  const lic=store.get('nf.lic',null);if(lic){const r=await verifyCode(lic);G.licensed=r.ok}
+  try{const ic=[['cube',null],['L',null],['icosa',null]];ic.forEach(([k],i)=>{const S=getSolid(k);const L=genLayout(S);const cols=[['#22d3ee','#f472b6','#fbbf24','#8b5cf6','#a3e635','#fb923c'],null,null][i];
+    $('lvI'+(i+1)).src=thumb(L,cols?L.faces.map((f,j)=>({fill:cols[j%6]})):plainDecor(L,['#22d3ee','#fbbf24','#f472b6'][i]),{view:{pitch:.5,yaw:-.7}})})}catch(e){console.warn(e)}
+  if(!G.licensed&&G.lvl>1)G.lvl=1;renderHome();
+  $('levels').onclick=e=>{const b=e.target.closest('.lvl');if(!b)return;const l=+b.dataset.l;if(!G.licensed&&l>1){openLock();return}G.lvl=l;updateLevels()};
+  $('pchips').onclick=e=>{const b=e.target.closest('.pchip');if(!b)return;$('pname').value=b.dataset.n;G.player=b.dataset.n;updateChips();[...$('pchips').children].forEach(c=>c.classList.toggle('on',c===b))};
+  $('pname').addEventListener('keydown',e=>{if(e.key==='Enter')startGame()});
+  $('btnStart').onclick=startGame;$('btnStats').onclick=renderStats;$('btnStats2').onclick=renderStats;$('btnBack').onclick=renderHome;$('btnHome').onclick=renderHome;$('btnAgain').onclick=()=>{SESS={...SESS,i:0,score:0,streak:0,best:0,correct:0,time:0,byType:{},hints:0};nextQ()};
+  $('brand').onclick=e=>{e.preventDefault();if(!$('s-game').hidden&&Q&&!Q.done)return;renderHome()};
+  $('btnHint').onclick=useHint;$('btnNext').onclick=nextQ;$('btnSol').onclick=()=>Q.solOpen?hideSolution():showSolution(null);
+  let quitArm=0;$('btnQuit').onclick=()=>{if(Date.now()-quitArm<2500){clearInterval(timer);renderHome();$('btnQuit').textContent='ออก'}else{quitArm=Date.now();$('btnQuit').textContent='แตะอีกครั้งเพื่อออก';setTimeout(()=>$('btnQuit').textContent='ออก',2500)}};
+  $('btnPlay').onclick=()=>{if(VW.play){VW.play=false}else{if(VW.t>=1)VW.t=0;VW.play=true;VW.dir=1;VW.hold=0}setPlayLabel()};
+  $('foldT').oninput=e=>{VW.play=false;VW.t=e.target.value/100;applyT();setPlayLabel()};
+  $('lbSeg').onclick=e=>{const b=e.target.closest('button');if(b){lbLvl=+b.dataset.l;renderStats()}};
+  $('whoChip').onclick=renderHome;$('licChip').onclick=openLock;$('trialUnlock').onclick=openLock;
+  $('btnLockClose').onclick=()=>{$('lockModal').hidden=true};$('btnCopyId').onclick=e=>copyText('ขอรหัสปลดล็อก NetFold\nรหัสเครื่อง: '+$('devId').textContent,e.currentTarget);
+  $('btnUnlock').onclick=async()=>{const m=$('licMsg');m.className='msg';m.textContent='กำลังตรวจรหัส…';const r=await verifyCode($('licInput').value);
+    if(r.ok){G.licensed=true;m.className='msg ok';m.textContent='ปลดล็อกสำเร็จ! เล่นได้ครบทุกระดับแล้ว';$('devId').textContent=await deviceId();updateChips();updateLevels();confetti(140);setTimeout(()=>{$('lockModal').hidden=true},1400)}
+    else{m.className='msg no';m.textContent=r.msg}};
+}
+boot();
+
+</script>
+</body></html>
